@@ -14,10 +14,15 @@ export const COLOR_GREEN = 0x37eb34;
 export const COLOR_CYAN = 0x15edc2;
 export const COLOR_ORANGE = 0xba7816;
 
+const INTERVAL_FIND = 30;
+const INTERVAL_TRACE = 10;
+
 export class PathFindingScene extends BaseScene {
   private grid: Grid;
   private sourceNode: Node | null = null;
   private destNode: Node | null = null;
+
+  private currentAbortController: AbortController | null = null;
 
   public create() {
     this.grid = new Grid(
@@ -41,7 +46,11 @@ export class PathFindingScene extends BaseScene {
     });
 
     this.input.keyboard?.on("keyup-SPACE", () => {
+      this.currentAbortController?.abort();
+
       let controller = new AbortController();
+      this.currentAbortController = controller;
+
       // @ts-ignore
       window.c = controller;
 
@@ -56,7 +65,9 @@ export class PathFindingScene extends BaseScene {
           console.log("Ended");
         })
         .catch(err => {
-          console.log(err.name);
+          if (err.name === "AbortError") {
+            // Aborted
+          }
         });
     });
   }
@@ -145,7 +156,7 @@ export class PathFindingScene extends BaseScene {
             // reject(new Error("Path not found")); // reject;
           }
         }
-      }, 70);
+      }, INTERVAL_FIND);
     });
   }
 
@@ -189,7 +200,7 @@ export class PathFindingScene extends BaseScene {
 
         let node = path[nextIndex++];
         node.pathNode = true;
-      }, 30);
+      }, INTERVAL_TRACE);
     });
   }
 }
