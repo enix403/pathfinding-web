@@ -33,6 +33,8 @@ export class PathFindingScene extends BaseScene {
     this.sourceNode = this.grid.getNode(3, 15);
     this.destNode = this.grid.getNode(25, 2);
 
+    console.log(this.sourceNode, this.destNode);
+
     this.input.on("pointerdown", pointer => {
       let node = this.grid.worldToGrid(pointer.x, pointer.y);
 
@@ -94,7 +96,7 @@ export class PathFindingScene extends BaseScene {
       if (finder.ended) {
         clearInterval(intervalId);
         setTimeout(() => {
-          this.grid.reset();
+          this.grid.reset(true);
 
           if (finder.found) {
             this.startRetrace();

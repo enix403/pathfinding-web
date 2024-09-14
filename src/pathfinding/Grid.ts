@@ -30,8 +30,8 @@ export class Grid {
     }
   }
 
-  public reset() {
-    this.nodes.forEach(node => node.reset());
+  public reset(keepParents = false) {
+    this.nodes.forEach(node => node.reset(keepParents));
   }
 
   public getNode(tileX: number, tileY: number) {

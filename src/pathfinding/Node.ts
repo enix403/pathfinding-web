@@ -23,11 +23,13 @@ export class Node {
       .setOrigin(0, 0);
   }
 
-  public reset() {
+  public reset(keepParents = false) {
     this.opened = false;
     this.closed = false;
     this.pathNode = false;
-    this.parent = null;
+
+    if (!keepParents)
+      this.parent = null;
   }
 
   public setColor(color: number) {
