@@ -41,8 +41,15 @@ export class PathFindingScene extends BaseScene {
     });
 
     this.input.keyboard?.on("keyup-SPACE", () => {
-      this.findPath().then(path => {
-        return path && this.tracePath(path);
+      let controller = new AbortController();
+      // @ts-ignore
+      window.c = controller;
+
+      this.findPath({ signal: controller.signal }).then(path => {
+        if (path) {
+          this.grid.reset(true);
+          return this.tracePath(path);
+        }
       });
     });
   }
@@ -77,29 +84,49 @@ export class PathFindingScene extends BaseScene {
     });
   }
 
-  private findPath(): Promise<Node[] | null> {
-    this.grid.reset();
-
-    // let finder = new BFSFinder(
-    let finder = new AStarFinder(this.grid, this.sourceNode!, this.destNode!);
-
-    finder.init();
-
+  private findPath(
+    opts: {
+      signal?: AbortSignal;
+    } = {}
+  ): Promise<Node[] | null> {
     return new Promise(resolve => {
-      let intervalId: number;
-      intervalId = setInterval(() => {
-        finder.step();
-        if (finder.ended) {
-          clearInterval(intervalId);
-          setTimeout(() => {
-            this.grid.reset(true);
+      let { signal } = opts;
 
-            if (finder.found) {
-              resolve(finder.path);
-            } else {
-              resolve(null);
-            }
-          }, 0);
+      if (signal?.aborted) {
+        resolve(null);
+        return;
+      }
+
+      this.grid.reset();
+
+      // let finder = new BFSFinder(
+      let finder = new AStarFinder(
+        this.grid,
+        this.sourceNode!,
+        this.destNode!,
+        signal
+      );
+
+      finder.init();
+      let intervalId: number;
+
+      const stopTask = () => {
+        clearInterval(intervalId);
+        signal?.removeEventListener("abort", stopTask);
+      };
+
+      signal?.addEventListener("abort", stopTask);
+
+      intervalId = setInterval(() => {
+        if (signal?.aborted) {
+          return;
+        }
+
+        finder.progress();
+
+        if (finder.ended) {
+          stopTask();
+          resolve(finder.found ? finder.path : null);
         }
       }, 30);
     });

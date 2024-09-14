@@ -16,10 +16,20 @@ export abstract class Finder {
   constructor(
     public readonly grid: Grid,
     public readonly source: Node,
-    public readonly dest: Node
+    public readonly dest: Node,
+    private readonly signal?: AbortSignal
   ) {}
 
   protected init() {}
+
+  public progress() {
+    if (this._ended || this.signal?.aborted) {
+      return;
+    }
+
+    this.step();
+  }
+
   public abstract step(): void;
 
   protected constructPath() {
