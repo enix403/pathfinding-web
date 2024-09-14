@@ -9,7 +9,7 @@ const COLOR_BLUE = 0x0a78cc;
 const COLOR_YELLOW = 0xf2e707;
 const COLOR_RED = 0xeb3a34;
 const COLOR_GREEN = 0x37eb34;
-const COLOR_PINK = 0xba16aa;
+const COLOR_CYAN = 0x15edc2;
 const COLOR_ORANGE = 0xba7816;
 
 class Node {
@@ -42,7 +42,8 @@ class Node {
 
 class BFSFinder {
   private queue: Node[] = [];
-  private found = false;
+  public found = false;
+  public ended = false;
 
   constructor(
     public readonly app: AppScene,
@@ -55,13 +56,16 @@ class BFSFinder {
   }
 
   public step() {
-    if (this.queue.length === 0)
+    if (this.queue.length === 0) {
+      this.ended = true;
       return;
+    }
 
     let node = this.queue.shift()!;
     node.closed = true;
 
     if (node === this.dest) {
+      this.ended = true;
       this.found = true;
       return;
     }
@@ -132,7 +136,7 @@ export class AppScene extends BaseScene {
       } else if (node.closed) {
         color = COLOR_ORANGE;
       } else if (node.opened) {
-        color = COLOR_PINK;
+        color = COLOR_CYAN;
       } else if (node === hoveredNode) {
         color = COLOR_YELLOW;
       } else {
@@ -154,9 +158,18 @@ export class AppScene extends BaseScene {
       this.destNode!
     );
 
-    this.input.keyboard?.on("keyup-SPACE", () => {
+    let intervalId: number;
+
+    intervalId = setInterval(() => {
       this.finder?.step();
-    });
+      if (this.finder?.ended) {
+        clearInterval(intervalId)
+      }
+    }, 100);
+
+    // this.input.keyboard?.on("keyup-SPACE", () => {
+    //   this.finder?.step();
+    // });
   }
 
   public getNode(tileX: number, tileY: number) {
