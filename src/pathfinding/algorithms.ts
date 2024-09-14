@@ -1,11 +1,11 @@
-import type { AppScene, Node } from "./AppScene";
+import type { PathFindingScene, Node } from "./PathFindingScene";
 
 export abstract class Finder {
   public found = false;
   public ended = false;
 
   constructor(
-    public readonly app: AppScene,
+    public readonly app: PathFindingScene,
     public readonly nodes: Node[],
     public readonly source: Node,
     public readonly dest: Node

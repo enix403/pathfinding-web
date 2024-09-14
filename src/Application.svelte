@@ -1,12 +1,6 @@
-<script lang="ts">
-  import { onMount } from "svelte";
-  import { createGame } from "./AppScene";
+<script>
+  import PathFinding from "./pathfinding/PathFinding.svelte";
 
-  let canvas: HTMLCanvasElement | null = null;
-
-  onMount(() => {
-    return createGame(canvas!);
-  });
 </script>
 
-<canvas bind:this={canvas} />
+<PathFinding />

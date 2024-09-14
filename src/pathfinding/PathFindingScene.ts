@@ -1,6 +1,6 @@
 import Phaser from "phaser";
-import { BaseScene } from "./scene/BaseScene";
-import { Vector } from "./math/vector";
+import { BaseScene } from "~/scene/BaseScene";
+import { Vector } from "~/math/vector";
 
 import { BFSFinder, AStarFinder } from "./algorithms";
 
@@ -55,7 +55,7 @@ export class Node {
   }
 }
 
-export class AppScene extends BaseScene {
+export class PathFindingScene extends BaseScene {
   private numTilesX: number;
   private numTilesY: number;
 
@@ -258,7 +258,7 @@ export class AppScene extends BaseScene {
 }
 
 export function createGame(canvas: HTMLCanvasElement) {
-  let scene = new AppScene();
+  let scene = new PathFindingScene();
 
   let game = new Phaser.Game({
     scene: scene,
