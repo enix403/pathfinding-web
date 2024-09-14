@@ -8,6 +8,7 @@ let tileSize = 26;
 let pad = 4;
 
 const COLOR_BLUE = 0x0a78cc;
+const COLOR_DIM_BLUE = 0x072942;
 const COLOR_YELLOW = 0xf2e707;
 const COLOR_RED = 0xeb3a34;
 const COLOR_GREEN = 0x37eb34;
@@ -16,6 +17,8 @@ const COLOR_ORANGE = 0xba7816;
 
 export class Node {
   public gameObject: Phaser.GameObjects.Rectangle;
+
+  public walkable: boolean = true;
 
   public opened: boolean = false;
   public closed: boolean = false;
@@ -86,19 +89,40 @@ export class AppScene extends BaseScene {
       }
     }
 
-    this.initFinder();
+    this.sourceNode = this.getNode(3, 15);
+    this.destNode = this.getNode(25, 2);
+
+    this.input.on('pointerdown', (pointer) => {
+      let mousePos = new Vector(
+        pointer.x,
+        pointer.y
+      );
+
+      let node = this.worldToGrid(mousePos);
+
+      if (node !== this.sourceNode &&  node !== this.destNode)
+        node.walkable = !node.walkable;
+    });
+
+    {
+      this.input.keyboard?.on("keyup-SPACE", () => {
+        this.startFinding();
+      });
+    }
   }
 
   public update() {
-    // let mousePos = new Vector(
-    //   this.input.mousePointer.x,
-    //   this.input.mousePointer.y
-    // );
-    // let hoveredNode = this.worldToGrid(mousePos);
+    let mousePos = new Vector(
+      this.input.mousePointer.x,
+      this.input.mousePointer.y
+    );
+    let hoveredNode = this.worldToGrid(mousePos);
 
     this.nodes.forEach(node => {
       let color: number;
-      if (node === this.sourceNode) {
+      if (!node.walkable) {
+        color = 0x000000;
+      } else if (node === this.sourceNode) {
         color = COLOR_GREEN;
       } else if (node === this.destNode) {
         color = COLOR_RED;
@@ -106,8 +130,8 @@ export class AppScene extends BaseScene {
         color = COLOR_ORANGE;
       } else if (node.opened) {
         color = COLOR_CYAN;
-        // } else if (node === hoveredNode) {
-        // color = COLOR_YELLOW;
+      } else if (node === hoveredNode) {
+        color = COLOR_DIM_BLUE;
       } else {
         color = COLOR_BLUE;
       }
@@ -116,13 +140,7 @@ export class AppScene extends BaseScene {
     });
   }
 
-  private initFinder() {
-    this.sourceNode = this.getNode(3, 15);
-    this.destNode = this.getNode(25, 2);
-
-    // this.sourceNode = this.getNode(3, 15);
-    // this.destNode = this.getNode(8, 15);
-
+  private startFinding() {
     // let finder = new BFSFinder(
     let finder = new AStarFinder(
       this,
@@ -141,16 +159,6 @@ export class AppScene extends BaseScene {
         clearInterval(intervalId);
       }
     }, 50);
-
-    /* {
-      console.log(finder.openList);
-      // @ts-ignore
-      window.f = finder;
-      this.input.keyboard?.on("keyup-SPACE", () => {
-        finder?.step();
-        console.log(finder.openList);
-      });
-    } */
   }
 
   public getNode(tileX: number, tileY: number) {
@@ -158,7 +166,7 @@ export class AppScene extends BaseScene {
     return this.nodes[index];
   }
 
-  public getNeighbours(node: Node): Node[] {
+  public getNeighbours(node: Node, includeUnwalkable = false): Node[] {
     let neighbours: Node[] = [];
 
     // prettier-ignore
@@ -179,7 +187,9 @@ export class AppScene extends BaseScene {
         tileY >= 0 &&
         tileY < this.numTilesY
       ) {
-        neighbours.push(this.getNode(tileX, tileY));
+
+        if (includeUnwalkable || node.walkable)
+          neighbours.push(this.getNode(tileX, tileY));
       }
     }
 
