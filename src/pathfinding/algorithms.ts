@@ -1,12 +1,12 @@
-import type { PathFindingScene, Node } from "./PathFindingScene";
+import { Grid } from "./Grid";
+import { Node } from "./Node";
 
 export abstract class Finder {
   public found = false;
   public ended = false;
 
   constructor(
-    public readonly app: PathFindingScene,
-    public readonly nodes: Node[],
+    public readonly grid: Grid,
     public readonly source: Node,
     public readonly dest: Node
   ) {}
@@ -41,8 +41,8 @@ export class BFSFinder extends Finder {
       return;
     }
 
-    for (const ng of this.app.getNeighbours(node)) {
-      if (ng.visited) {
+    for (const ng of this.grid.getNeighbours(node)) {
+      if (ng.opened || ng.closed) {
         continue;
       }
 
