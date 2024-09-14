@@ -2,8 +2,16 @@ import { Grid } from "./Grid";
 import { Node } from "./Node";
 
 export abstract class Finder {
-  public found = false;
-  public ended = false;
+  protected _found = false;
+  public get found() { return this._found; }
+
+  protected _ended = false;
+  public get ended() { return this._ended; }
+
+  // Does not contain source node.
+  // Contains destination node.
+  protected _path: Node[] = [];
+  public get path() { return this._path; }
 
   constructor(
     public readonly grid: Grid,
@@ -13,12 +21,27 @@ export abstract class Finder {
 
   protected init() {}
   public abstract step(): void;
+
+  protected constructPath() {
+    this._ended = true;
+    this._found = true;
+
+    let path: Node[] = [];
+    let current = this.dest!;
+
+    while (current !== this.source) {
+      path.push(current);
+      current = current.parent!;
+    }
+
+    path.reverse();
+
+    this._path = path;
+  }
 }
 
 export class BFSFinder extends Finder {
   private queue: Node[];
-  public found = false;
-  public ended = false;
 
   override init() {
     this.source.opened = true;
@@ -28,7 +51,7 @@ export class BFSFinder extends Finder {
 
   public step() {
     if (this.queue.length === 0) {
-      this.ended = true;
+      this._ended = true;
       return;
     }
 
@@ -36,8 +59,7 @@ export class BFSFinder extends Finder {
     node.closed = true;
 
     if (node === this.dest) {
-      this.ended = true;
-      this.found = true;
+      this.constructPath();
       return;
     }
 
@@ -61,26 +83,6 @@ export class AStarFinder extends Finder {
   private _gCosts: Map<Node, number>;
   private _hCosts: Map<Node, number>;
 
-  private gCost(node: Node) {
-    return this._gCosts.get(node) || 0;
-  }
-
-  private setGCost(node: Node, cost: number) {
-    this._gCosts.set(node, cost);
-  }
-
-  private hCost(node: Node) {
-    return this._hCosts.get(node) || 0;
-  }
-
-  private setHCost(node: Node, cost: number) {
-    this._hCosts.set(node, cost);
-  }
-
-  private fCost(node: Node) {
-    return this.gCost(node) + this.hCost(node);
-  }
-
   public init() {
     this._gCosts = new Map();
     this._hCosts = new Map();
@@ -97,7 +99,7 @@ export class AStarFinder extends Finder {
 
   public step(): void {
     if (this.openList.length === 0) {
-      this.ended = true;
+      this._ended = true;
       return;
     }
 
@@ -124,8 +126,7 @@ export class AStarFinder extends Finder {
     node.closed = true;
 
     if (node === this.dest) {
-      this.ended = true;
-      this.found = true;
+      this.constructPath();
       return;
     }
 
@@ -155,5 +156,25 @@ export class AStarFinder extends Finder {
     let dy = Math.abs(nodeA.tileY - nodeB.tileY);
 
     return dx + dy;
+  }
+
+  private gCost(node: Node) {
+    return this._gCosts.get(node) || 0;
+  }
+
+  private setGCost(node: Node, cost: number) {
+    this._gCosts.set(node, cost);
+  }
+
+  private hCost(node: Node) {
+    return this._hCosts.get(node) || 0;
+  }
+
+  private setHCost(node: Node, cost: number) {
+    this._hCosts.set(node, cost);
+  }
+
+  private fCost(node: Node) {
+    return this.gCost(node) + this.hCost(node);
   }
 }
