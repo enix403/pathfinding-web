@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { BaseScene } from "./scene/BaseScene";
 import { Vector } from "./math/vector";
 
-import { BFSFinder, AStarFinder } from './algorithms';
+import { BFSFinder, AStarFinder } from "./algorithms";
 
 let tileSize = 26;
 let pad = 4;
@@ -106,7 +106,7 @@ export class AppScene extends BaseScene {
         color = COLOR_ORANGE;
       } else if (node.opened) {
         color = COLOR_CYAN;
-      // } else if (node === hoveredNode) {
+        // } else if (node === hoveredNode) {
         // color = COLOR_YELLOW;
       } else {
         color = COLOR_BLUE;
@@ -117,11 +117,11 @@ export class AppScene extends BaseScene {
   }
 
   private initFinder() {
-    // this.sourceNode = this.getNode(3, 15);
-    // this.destNode = this.getNode(25, 2);
-
     this.sourceNode = this.getNode(3, 15);
-    this.destNode = this.getNode(8, 15);
+    this.destNode = this.getNode(25, 2);
+
+    // this.sourceNode = this.getNode(3, 15);
+    // this.destNode = this.getNode(8, 15);
 
     // let finder = new BFSFinder(
     let finder = new AStarFinder(
@@ -141,6 +141,16 @@ export class AppScene extends BaseScene {
         clearInterval(intervalId)
       }
     }, 50);
+
+    /* {
+      console.log(finder.openList);
+      // @ts-ignore
+      window.f = finder;
+      this.input.keyboard?.on("keyup-SPACE", () => {
+        finder?.step();
+        console.log(finder.openList);
+      });
+    } */
   }
 
   public getNode(tileX: number, tileY: number) {
@@ -153,15 +163,19 @@ export class AppScene extends BaseScene {
 
     for (let x = -1; x <= 1; ++x) {
       for (let y = -1; y <= 1; ++y) {
-        if (x === 0 && y === 0)
-        {
+        if (x === 0 && y === 0) {
           continue;
         }
 
         let tileX = node.tileX + x;
         let tileY = node.tileY + y;
 
-        if (tileX >= 0 && tileX < this.numTilesX && tileY >= 0 && tileY < this.numTilesY) {
+        if (
+          tileX >= 0 &&
+          tileX < this.numTilesX &&
+          tileY >= 0 &&
+          tileY < this.numTilesY
+        ) {
           neighbours.push(this.getNode(tileX, tileY));
         }
       }

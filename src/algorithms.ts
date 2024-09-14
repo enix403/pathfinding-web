@@ -54,15 +54,14 @@ export class BFSFinder extends Finder {
 /* ==================== */
 
 export class AStarFinder extends Finder {
-  private openList: Node[];
+  public openList: Node[];
 
   public init() {
     this.source.opened = true;
     this.openList = [this.source];
 
     this.source.gCost = 0;
-    // this.source.hCost = this.getDistance(this.source, this.dest);
-    this.source.hCost = 0;
+    this.source.hCost = this.getDistance(this.source, this.dest);
   }
 
   public step(): void {
@@ -71,11 +70,14 @@ export class AStarFinder extends Finder {
       return;
     }
 
-    let minFCostNode = this.nodes[0];
+    let minFCostNode = this.openList[0];
     let minIndex = 0;
-    for (let i = 1; i < this.nodes.length; ++i) {
-      let node = this.nodes[i];
-      if (node.fCost < minFCostNode.fCost) {
+    for (let i = 1; i < this.openList.length; ++i) {
+      let node = this.openList[i];
+      if (
+        node.fCost < minFCostNode.fCost
+        || (node.fCost === minFCostNode.fCost && node.hCost < minFCostNode.hCost)
+      ) {
         minFCostNode = node;
         minIndex = i;
       }
@@ -88,7 +90,6 @@ export class AStarFinder extends Finder {
     }
 
     node.closed = true;
-    console.log(node.fCost, node.gCost, node.hCost);
 
     if (node === this.dest) {
       this.ended = true;
