@@ -45,12 +45,18 @@ export class PathFindingScene extends BaseScene {
       // @ts-ignore
       window.c = controller;
 
-      this.findPath({ signal: controller.signal }).then(path => {
-        if (path) {
-          this.grid.reset(true);
-          return this.tracePath(path);
-        }
-      });
+      this.findPath({ signal: controller.signal })
+        .then(path => {
+          if (path) {
+            this.grid.reset(true);
+            return this.tracePath(path, { signal: controller.signal });
+          } else {
+            console.log("(No Path) Ended");
+          }
+        })
+        .then(() => {
+          console.log("Ended");
+        });
     });
   }
 
@@ -93,7 +99,7 @@ export class PathFindingScene extends BaseScene {
       let { signal } = opts;
 
       if (signal?.aborted) {
-        resolve(null);
+        resolve(null); // reject
         return;
       }
 
@@ -112,10 +118,15 @@ export class PathFindingScene extends BaseScene {
 
       const stopTask = () => {
         clearInterval(intervalId);
-        signal?.removeEventListener("abort", stopTask);
+        signal?.removeEventListener("abort", onAbort);
       };
 
-      signal?.addEventListener("abort", stopTask);
+      const onAbort = () => {
+        stopTask();
+        resolve(null); // reject;
+      };
+
+      signal?.addEventListener("abort", onAbort);
 
       intervalId = setInterval(() => {
         if (signal?.aborted) {
@@ -126,26 +137,57 @@ export class PathFindingScene extends BaseScene {
 
         if (finder.ended) {
           stopTask();
-          resolve(finder.found ? finder.path : null);
+          if (finder.found) {
+            resolve(finder.path);
+          } else {
+            resolve(null); // reject;
+          }
         }
-      }, 30);
+      }, 70);
     });
   }
 
-  private tracePath(path: Node[]): Promise<void> {
+  private tracePath(
+    path: Node[],
+    opts: { signal?: AbortSignal } = {}
+  ): Promise<void> {
     return new Promise(resolve => {
+      let { signal } = opts;
+
+      if (signal?.aborted) {
+        resolve(); // reject
+        return;
+      }
+
       let nextIndex = 0;
       let intervalId: number;
+
+      const stopTask = () => {
+        clearInterval(intervalId);
+        signal?.removeEventListener("abort", onAbort);
+      };
+
+      const onAbort = () => {
+        stopTask();
+        resolve(); // reject
+      };
+
+      signal?.addEventListener("abort", onAbort);
+
       intervalId = setInterval(() => {
+        if (signal?.aborted) {
+          return;
+        }
+
         if (nextIndex >= path.length) {
-          clearInterval(intervalId);
+          stopTask();
           resolve();
           return;
         }
 
         let node = path[nextIndex++];
         node.pathNode = true;
-      }, 10);
+      }, 30);
     });
   }
 }
