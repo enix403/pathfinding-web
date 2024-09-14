@@ -19,6 +19,42 @@ class Area {
   ) {}
 }
 
+function divideV(grid: Grid, area: Area, stack: Area[]) {
+  if (area.width <= 4) {
+    return;
+  }
+
+  let cutAt = area.startX + 1 + Math.floor((area.width - 2) * Math.random());
+  let doorAt = Math.floor(area.height * Math.random());
+
+  for (let y = 1; y < area.height - 1; ++y) {
+    let node = grid.getNode(cutAt, area.startY + y);
+    if (y === doorAt) node.walkable = true;
+    else node.walkable = false;
+  }
+
+  let area1 = new Area(
+    area.startX,
+    area.startY,
+    cutAt - area.startX,
+    area.height,
+    "v",
+    cutAt
+  );
+
+  let area2 = new Area(
+    cutAt + 1,
+    area.startY,
+    area.startX + area.width - cutAt - 1,
+    area.height,
+    "v",
+    cutAt
+  );
+
+  stack.push(area1);
+  stack.push(area2);
+}
+
 export function fillMaze(grid: Grid) {
   let root = new Area(0, 0, grid.NumTilesX, grid.NumTilesY, "v", -1);
 
@@ -27,86 +63,6 @@ export function fillMaze(grid: Grid) {
   while (stack.length > 0) {
     let area = stack.pop()!;
 
-    if (area.width <= 2) {
-      continue;
-    }
-
-    let cutAt = area.startX + 1 + Math.floor((area.width - 2) * Math.random());
-    let doorAt = Math.floor(area.height * Math.random());
-
-    for (let y = 0; y < area.height; ++y) {
-      let node = grid.getNode(cutAt, area.startY + y);
-      if (y === doorAt)
-        node.walkable = true;
-      else
-        node.walkable = false;
-    }
-
-    let area1 = new Area(
-      area.startX,
-      area.startY,
-      cutAt - area.startX,
-      area.height,
-      'v',
-      cutAt
-    );
-
-    let area2 = new Area(
-      cutAt + 1,
-      area.startY,
-      area.startX + area.width - cutAt - 1,
-      area.height,
-      'v',
-      cutAt
-    );
-
-    stack.push(area1);
-    stack.push(area2);
+    divideV(grid, area, stack);
   }
 }
-
-/*
-export function fillMaze(grid: Grid) {
-  let root = new Area(0, 0, grid.NumTilesX - 1, grid.NumTilesY - 1);
-
-  let stack = [root];
-
-  while (stack.length > 0) {
-    let area = stack.pop()!;
-
-    if (area.width < 4) {
-      continue;
-    }
-
-    let cutTime = Math.random();
-
-    let cutAtDelta = Math.floor(clamp(area.width * cutTime, 2, area.width - 3));
-    let cutAt = area.startX + cutAtDelta;
-
-    let doorTime = Math.random();
-    let doorAt = area.startY + Math.floor((area.height - 2) * doorTime);
-
-    for (let y = area.startY, yp = y - 1; y <= area.endY; ++y, ++yp) {
-      let node = grid.getNode(cutAt, y);
-      if (y === doorAt || yp === doorAt)
-        node.walkable = true;
-      else
-        node.walkable = false;
-    }
-
-    let area1 = new Area(
-      area.startX, area.startY,
-      cutAt - 1, area.endY
-    );
-
-    let area2 = new Area(
-      cutAt + 1, area.startY,
-      area.endX, area.endY
-    );
-
-    stack.push(area1, area2);
-
-    // break;
-  }
-}
-*/
