@@ -177,7 +177,7 @@ export class AppScene extends BaseScene {
           }
         }, 0);
       }
-    }, 10);
+    }, 30);
   }
 
   private startRetrace() {
