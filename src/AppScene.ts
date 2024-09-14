@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { BaseScene } from "./scene/BaseScene";
 import { Vector } from "./math/vector";
 
-import { BFSFinder } from './algorithms';
+import { BFSFinder, AStarFinder } from './algorithms';
 
 let tileSize = 26;
 let pad = 4;
@@ -22,6 +22,14 @@ export class Node {
 
   public get visited() {
     return this.opened || this.closed;
+  }
+
+  // For A* algorithm
+  public gCost = 0;
+  public hCost = 0;
+
+  public get fCost() {
+    return this.gCost + this.hCost;
   }
 
   constructor(
@@ -112,7 +120,8 @@ export class AppScene extends BaseScene {
     this.sourceNode = this.getNode(3, 15);
     this.destNode = this.getNode(25, 2);
 
-    let finder = new BFSFinder(
+    // let finder = new BFSFinder(
+    let finder = new AStarFinder(
       this,
       this.nodes,
       this.sourceNode!,
