@@ -17,12 +17,23 @@ export const COLOR_ORANGE = 0xba7816;
 const INTERVAL_FIND = 30;
 const INTERVAL_TRACE = 10;
 
+enum PaintMode {
+  Wall,
+  Erase,
+  Source,
+  Dest
+}
+
 export class PathFindingScene extends BaseScene {
   private grid: Grid;
   private sourceNode: Node | null = null;
   private destNode: Node | null = null;
 
   private currentAbortController: AbortController | null = null;
+
+  // Paiting
+  private mouseDown = false;
+  private paintMode = PaintMode.Wall;
 
   public create() {
     this.grid = new Grid(
@@ -38,11 +49,12 @@ export class PathFindingScene extends BaseScene {
     this.sourceNode = this.grid.getNode(3, 15);
     this.destNode = this.grid.getNode(25, 2);
 
-    this.input.on("pointerdown", pointer => {
-      let node = this.grid.worldToGrid(pointer.x, pointer.y);
+    this.input.on('pointerdown', () => {
+      this.mouseDown = true;
+    });
 
-      if (node !== this.sourceNode && node !== this.destNode)
-        node.walkable = !node.walkable;
+    this.input.on('pointerup', () => {
+      this.mouseDown = false;
     });
 
     this.input.keyboard?.on("keyup-SPACE", () => {
@@ -77,6 +89,16 @@ export class PathFindingScene extends BaseScene {
       this.input.mousePointer.x,
       this.input.mousePointer.y
     );
+
+    if (this.mouseDown) {
+      if (this.paintMode === PaintMode.Wall) {
+        if (hoveredNode !== this.sourceNode && hoveredNode !== this.destNode)
+          hoveredNode.walkable = false;
+      }
+      else if (this.paintMode === PaintMode.Erase) {
+        hoveredNode.walkable = true;
+      }
+    }
 
     this.grid.getNodes().forEach(node => {
       let color: number;
