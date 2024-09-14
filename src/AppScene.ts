@@ -2,6 +2,8 @@ import Phaser from "phaser";
 import { BaseScene } from "./scene/BaseScene";
 import { Vector } from "./math/vector";
 
+import { BFSFinder } from './algorithms';
+
 let tileSize = 26;
 let pad = 4;
 
@@ -12,7 +14,7 @@ const COLOR_GREEN = 0x37eb34;
 const COLOR_CYAN = 0x15edc2;
 const COLOR_ORANGE = 0xba7816;
 
-class Node {
+export class Node {
   public gameObject: Phaser.GameObjects.Rectangle;
 
   public opened: boolean = false;
@@ -40,47 +42,6 @@ class Node {
   }
 }
 
-class BFSFinder {
-  private queue: Node[] = [];
-  public found = false;
-  public ended = false;
-
-  constructor(
-    public readonly app: AppScene,
-    public readonly nodes: Node[],
-    public readonly source: Node,
-    public readonly dest: Node
-  ) {
-    source.opened = true;
-    this.queue = [source];
-  }
-
-  public step() {
-    if (this.queue.length === 0) {
-      this.ended = true;
-      return;
-    }
-
-    let node = this.queue.shift()!;
-    node.closed = true;
-
-    if (node === this.dest) {
-      this.ended = true;
-      this.found = true;
-      return;
-    }
-
-    for (const ng of this.app.getNeighbours(node)) {
-      if (ng.visited) {
-        continue;
-      }
-
-      ng.opened = true;
-      this.queue.push(ng);
-    }
-  }
-}
-
 export class AppScene extends BaseScene {
   private numTilesX: number;
   private numTilesY: number;
@@ -92,7 +53,7 @@ export class AppScene extends BaseScene {
   private sourceNode: Node | null = null;
   private destNode: Node | null = null;
 
-  private finder: BFSFinder | null = null;
+  // private finder: BFSFinder | null = null;
 
   public create() {
     let worldWidth = +this.game.config.width;
@@ -121,11 +82,11 @@ export class AppScene extends BaseScene {
   }
 
   public update() {
-    let mousePos = new Vector(
-      this.input.mousePointer.x,
-      this.input.mousePointer.y
-    );
-    let hoveredNode = this.worldToGrid(mousePos);
+    // let mousePos = new Vector(
+    //   this.input.mousePointer.x,
+    //   this.input.mousePointer.y
+    // );
+    // let hoveredNode = this.worldToGrid(mousePos);
 
     this.nodes.forEach(node => {
       let color: number;
@@ -137,8 +98,8 @@ export class AppScene extends BaseScene {
         color = COLOR_ORANGE;
       } else if (node.opened) {
         color = COLOR_CYAN;
-      } else if (node === hoveredNode) {
-        color = COLOR_YELLOW;
+      // } else if (node === hoveredNode) {
+        // color = COLOR_YELLOW;
       } else {
         color = COLOR_BLUE;
       }
@@ -151,25 +112,23 @@ export class AppScene extends BaseScene {
     this.sourceNode = this.getNode(3, 15);
     this.destNode = this.getNode(25, 2);
 
-    this.finder = new BFSFinder(
+    let finder = new BFSFinder(
       this,
       this.nodes,
       this.sourceNode!,
       this.destNode!
     );
 
+    finder.init();
+
     let intervalId: number;
 
     intervalId = setInterval(() => {
-      this.finder?.step();
-      if (this.finder?.ended) {
+      finder?.step();
+      if (finder?.ended) {
         clearInterval(intervalId)
       }
-    }, 100);
-
-    // this.input.keyboard?.on("keyup-SPACE", () => {
-    //   this.finder?.step();
-    // });
+    }, 50);
   }
 
   public getNode(tileX: number, tileY: number) {
