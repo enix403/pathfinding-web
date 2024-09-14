@@ -138,7 +138,7 @@ export class AppScene extends BaseScene {
     intervalId = setInterval(() => {
       finder?.step();
       if (finder?.ended) {
-        clearInterval(intervalId)
+        clearInterval(intervalId);
       }
     }, 50);
 
@@ -161,23 +161,25 @@ export class AppScene extends BaseScene {
   public getNeighbours(node: Node): Node[] {
     let neighbours: Node[] = [];
 
-    for (let x = -1; x <= 1; ++x) {
-      for (let y = -1; y <= 1; ++y) {
-        if (x === 0 && y === 0) {
-          continue;
-        }
+    // prettier-ignore
+    const dirs = [
+      { x:  0, y:  1 },
+      { x:  0, y: -1 },
+      { x:  1, y:  0 },
+      { x: -1, y:  0 },
+    ];
 
-        let tileX = node.tileX + x;
-        let tileY = node.tileY + y;
+    for (const { x, y } of dirs) {
+      let tileX = node.tileX + x;
+      let tileY = node.tileY + y;
 
-        if (
-          tileX >= 0 &&
-          tileX < this.numTilesX &&
-          tileY >= 0 &&
-          tileY < this.numTilesY
-        ) {
-          neighbours.push(this.getNode(tileX, tileY));
-        }
+      if (
+        tileX >= 0 &&
+        tileX < this.numTilesX &&
+        tileY >= 0 &&
+        tileY < this.numTilesY
+      ) {
+        neighbours.push(this.getNode(tileX, tileY));
       }
     }
 

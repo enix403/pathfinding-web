@@ -121,9 +121,6 @@ export class AStarFinder extends Finder {
     let dx = Math.abs(nodeA.tileX - nodeB.tileX);
     let dy = Math.abs(nodeA.tileY - nodeB.tileY);
 
-    let short = Math.min(dx, dy);
-    let long = Math.max(dx, dy);
-
-    return 14 * short + 10 * (long - short);
+    return dx + dy;
   }
 }
