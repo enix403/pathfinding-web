@@ -61,7 +61,8 @@ export class AStarFinder extends Finder {
     this.openList = [this.source];
 
     this.source.gCost = 0;
-    this.source.hCost = this.getDistance(this.source, this.dest);
+    // this.source.hCost = this.getDistance(this.source, this.dest);
+    this.source.hCost = 0;
   }
 
   public step(): void {
@@ -87,6 +88,7 @@ export class AStarFinder extends Finder {
     }
 
     node.closed = true;
+    console.log(node.fCost, node.gCost, node.hCost);
 
     if (node === this.dest) {
       this.ended = true;

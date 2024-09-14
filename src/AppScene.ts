@@ -117,8 +117,11 @@ export class AppScene extends BaseScene {
   }
 
   private initFinder() {
+    // this.sourceNode = this.getNode(3, 15);
+    // this.destNode = this.getNode(25, 2);
+
     this.sourceNode = this.getNode(3, 15);
-    this.destNode = this.getNode(25, 2);
+    this.destNode = this.getNode(8, 15);
 
     // let finder = new BFSFinder(
     let finder = new AStarFinder(
