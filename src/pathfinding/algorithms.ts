@@ -58,13 +58,41 @@ export class BFSFinder extends Finder {
 export class AStarFinder extends Finder {
   public openList: Node[];
 
-  public init() {
-    this.source.opened = true;
-    this.source.parent = null;
-    this.openList = [this.source];
+  private _gCosts: Map<Node, number>;
+  private _hCosts: Map<Node, number>;
 
-    this.source.gCost = 0;
-    this.source.hCost = this.getDistance(this.source, this.dest);
+  private gCost(node: Node) {
+    return this._gCosts.get(node) || 0;
+  }
+
+  private setGCost(node: Node, cost: number) {
+    this._gCosts.set(node, cost);
+  }
+
+  private hCost(node: Node) {
+    return this._hCosts.get(node) || 0;
+  }
+
+  private setHCost(node: Node, cost: number) {
+    this._hCosts.set(node, cost);
+  }
+
+  private fCost(node: Node) {
+    return this.gCost(node) + this.hCost(node);
+  }
+
+  public init() {
+    this._gCosts = new Map();
+    this._hCosts = new Map();
+
+    let { source } = this;
+
+    source.opened = true;
+    source.parent = null;
+
+    this.openList = [source];
+
+    this.setGCost(source, 0);
   }
 
   public step(): void {
@@ -78,8 +106,9 @@ export class AStarFinder extends Finder {
     for (let i = 1; i < this.openList.length; ++i) {
       let node = this.openList[i];
       if (
-        node.fCost < minFCostNode.fCost
-        || (node.fCost === minFCostNode.fCost && node.hCost < minFCostNode.hCost)
+        this.fCost(node) < this.fCost(minFCostNode) ||
+        (this.fCost(node) === this.fCost(minFCostNode) &&
+          this.hCost(node) < this.hCost(minFCostNode))
       ) {
         minFCostNode = node;
         minIndex = i;
@@ -100,22 +129,22 @@ export class AStarFinder extends Finder {
       return;
     }
 
-    for (const ng of this.app.getNeighbours(node)) {
+    for (const ng of this.grid.getNeighbours(node)) {
       if (ng.closed) {
         continue;
       }
 
       let costToNeighbour = this.getDistance(node, ng);
-      let neighbourGCost = node.gCost + costToNeighbour;
+      let neighbourGCost = this.gCost(node) + costToNeighbour;
 
-      if (!ng.opened || neighbourGCost < ng.gCost) {
+      if (!ng.opened || neighbourGCost < this.gCost(ng)) {
         if (!ng.opened) {
           this.openList.push(ng);
         }
 
         ng.opened = true;
-        ng.gCost = neighbourGCost;
-        ng.hCost = this.getDistance(ng, this.dest);
+        this.setGCost(ng, neighbourGCost);
+        this.setHCost(ng, this.getDistance(ng, this.dest));
         ng.parent = node;
       }
     }
