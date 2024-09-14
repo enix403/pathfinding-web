@@ -5,6 +5,7 @@ import { Vector } from "~/math/vector";
 import { BFSFinder, AStarFinder } from "./algorithms";
 import { Grid } from "./Grid";
 import { Node } from "./Node";
+import { fillMaze } from "./generation";
 
 export const COLOR_BLUE = 0x0a78cc;
 export const COLOR_DIM_BLUE = 0x072942;
@@ -46,8 +47,10 @@ export class PathFindingScene extends BaseScene {
       )
     );
 
-    this.sourceNode = this.grid.getNode(3, 15);
-    this.destNode = this.grid.getNode(25, 2);
+    fillMaze(this.grid);
+
+    // this.sourceNode = this.grid.getNode(3, 15);
+    // this.destNode = this.grid.getNode(25, 2);
 
     this.input.on('pointerdown', () => {
       this.mouseDown = true;

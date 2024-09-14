@@ -6,7 +6,11 @@ let pad = 4;
 
 export class Grid {
   private numTilesX: number;
+  public get NumTilesX() { return this.numTilesX; }
+
   private numTilesY: number;
+  public get NumTilesY() { return this.numTilesY; }
+
   private nodes: Node[];
 
   constructor(
