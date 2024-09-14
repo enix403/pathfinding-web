@@ -51,6 +51,24 @@ export class PathFindingScene extends BaseScene {
 
     this.input.on('pointerdown', () => {
       this.mouseDown = true;
+
+      let clickedNode = this.grid.worldToGrid(
+        this.input.mousePointer.x,
+        this.input.mousePointer.y
+      );
+
+      if (clickedNode === this.sourceNode) {
+        this.paintMode = PaintMode.Source;
+      }
+      else if (clickedNode === this.destNode) {
+        this.paintMode = PaintMode.Dest;
+      }
+      else if (clickedNode.walkable) {
+        this.paintMode = PaintMode.Wall;
+      }
+      else {
+        this.paintMode = PaintMode.Erase;
+      }
     });
 
     this.input.on('pointerup', () => {
@@ -97,6 +115,12 @@ export class PathFindingScene extends BaseScene {
       }
       else if (this.paintMode === PaintMode.Erase) {
         hoveredNode.walkable = true;
+      }
+      else if (this.paintMode === PaintMode.Source) {
+        this.sourceNode = hoveredNode;
+      }
+      else if (this.paintMode === PaintMode.Dest) {
+        this.destNode = hoveredNode;
       }
     }
 
