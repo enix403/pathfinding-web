@@ -41,7 +41,9 @@ export class PathFindingScene extends BaseScene {
     });
 
     this.input.keyboard?.on("keyup-SPACE", () => {
-      this.startFinding();
+      this.findPath().then(path => {
+        return path && this.tracePath(path);
+      });
     });
   }
 
@@ -75,47 +77,49 @@ export class PathFindingScene extends BaseScene {
     });
   }
 
-  private startFinding() {
+  private findPath(): Promise<Node[] | null> {
     this.grid.reset();
 
     // let finder = new BFSFinder(
-    let finder = new AStarFinder(
-      this.grid,
-      this.sourceNode!,
-      this.destNode!
-    );
+    let finder = new AStarFinder(this.grid, this.sourceNode!, this.destNode!);
 
     finder.init();
 
-    let intervalId: number;
+    return new Promise(resolve => {
+      let intervalId: number;
+      intervalId = setInterval(() => {
+        finder.step();
+        if (finder.ended) {
+          clearInterval(intervalId);
+          setTimeout(() => {
+            this.grid.reset(true);
 
-    intervalId = setInterval(() => {
-      finder.step();
-      if (finder.ended) {
-        clearInterval(intervalId);
-        setTimeout(() => {
-          this.grid.reset(true);
-
-          if (finder.found) {
-            this.startTracePath(finder.path);
-          }
-        }, 0);
-      }
-    }, 30);
+            if (finder.found) {
+              resolve(finder.path);
+            } else {
+              resolve(null);
+            }
+          }, 0);
+        }
+      }, 30);
+    });
   }
 
-  private startTracePath(path: Node[]) {
-    let nextIndex = 0;
-    let intervalId: number;
-    intervalId = setInterval(() => {
-      if (nextIndex >= path.length) {
-        clearInterval(intervalId);
-        return;
-      }
+  private tracePath(path: Node[]): Promise<void> {
+    return new Promise(resolve => {
+      let nextIndex = 0;
+      let intervalId: number;
+      intervalId = setInterval(() => {
+        if (nextIndex >= path.length) {
+          clearInterval(intervalId);
+          resolve();
+          return;
+        }
 
-      let node = path[nextIndex++];
-      node.pathNode = true;
-    }, 10);
+        let node = path[nextIndex++];
+        node.pathNode = true;
+      }, 10);
+    });
   }
 }
 
