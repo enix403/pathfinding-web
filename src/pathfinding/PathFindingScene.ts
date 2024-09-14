@@ -47,8 +47,10 @@ export class PathFindingScene extends BaseScene {
 
       this.findPath({ signal: controller.signal })
         .then(path => {
-          this.grid.reset(true);
-          return this.tracePath(path, { signal: controller.signal });
+          if (path) {
+            this.grid.reset(true);
+            return this.tracePath(path, { signal: controller.signal });
+          }
         })
         .then(() => {
           console.log("Ended");
@@ -93,7 +95,7 @@ export class PathFindingScene extends BaseScene {
     opts: {
       signal?: AbortSignal;
     } = {}
-  ): Promise<Node[]> {
+  ): Promise<Node[] | null> {
     return new Promise((resolve, reject) => {
       let { signal } = opts;
 
@@ -139,7 +141,8 @@ export class PathFindingScene extends BaseScene {
           if (finder.found) {
             resolve(finder.path);
           } else {
-            reject(new Error("Path not found")); // reject;
+            resolve(null);
+            // reject(new Error("Path not found")); // reject;
           }
         }
       }, 70);
