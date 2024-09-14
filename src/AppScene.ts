@@ -19,7 +19,9 @@ export class Node {
   public gameObject: Phaser.GameObjects.Rectangle;
 
   public walkable: boolean = true;
+  public parent: Node | null = null;
 
+  public pathNode: boolean = false;
   public opened: boolean = false;
   public closed: boolean = false;
 
@@ -92,15 +94,12 @@ export class AppScene extends BaseScene {
     this.sourceNode = this.getNode(3, 15);
     this.destNode = this.getNode(25, 2);
 
-    this.input.on('pointerdown', (pointer) => {
-      let mousePos = new Vector(
-        pointer.x,
-        pointer.y
-      );
+    this.input.on("pointerdown", pointer => {
+      let mousePos = new Vector(pointer.x, pointer.y);
 
       let node = this.worldToGrid(mousePos);
 
-      if (node !== this.sourceNode &&  node !== this.destNode)
+      if (node !== this.sourceNode && node !== this.destNode)
         node.walkable = !node.walkable;
     });
 
@@ -126,6 +125,8 @@ export class AppScene extends BaseScene {
         color = COLOR_GREEN;
       } else if (node === this.destNode) {
         color = COLOR_RED;
+      } else if (node.pathNode) {
+        color = COLOR_YELLOW;
       } else if (node.closed) {
         color = COLOR_ORANGE;
       } else if (node.opened) {
@@ -141,6 +142,14 @@ export class AppScene extends BaseScene {
   }
 
   private startFinding() {
+    this.nodes.forEach(n => {
+      n.parent = null;
+
+      n.pathNode = false;
+      n.closed = false;
+      n.opened = false;
+    });
+
     // let finder = new BFSFinder(
     let finder = new AStarFinder(
       this,
@@ -154,11 +163,47 @@ export class AppScene extends BaseScene {
     let intervalId: number;
 
     intervalId = setInterval(() => {
-      finder?.step();
-      if (finder?.ended) {
+      finder.step();
+      if (finder.ended) {
         clearInterval(intervalId);
+        setTimeout(() => {
+          this.nodes.forEach(n => {
+            n.closed = false;
+            n.opened = false;
+          });
+
+          if (finder.found) {
+            this.startRetrace();
+          }
+        }, 0);
       }
-    }, 50);
+    }, 10);
+  }
+
+  private startRetrace() {
+    let path: Node[] = [];
+    let current = this.destNode!;
+
+    while (current !== this.sourceNode) {
+      path.push(current);
+      current = current.parent!;
+    }
+
+    path.reverse();
+    path.pop(); // Remove destNode;
+
+    let nextIndex = 0;
+
+    let intervalId: number;
+    intervalId = setInterval(() => {
+      if (nextIndex >= path.length) {
+        clearInterval(intervalId);
+        return;
+      }
+
+      let node = path[nextIndex++];
+      node.pathNode = true;
+    }, 10);
   }
 
   public getNode(tileX: number, tileY: number) {
@@ -187,7 +232,6 @@ export class AppScene extends BaseScene {
         tileY >= 0 &&
         tileY < this.numTilesY
       ) {
-
         if (includeUnwalkable || node.walkable)
           neighbours.push(this.getNode(tileX, tileY));
       }

@@ -22,6 +22,7 @@ export class BFSFinder extends Finder {
 
   override init() {
     this.source.opened = true;
+    this.source.parent = null;
     this.queue = [this.source];
   }
 
@@ -47,6 +48,7 @@ export class BFSFinder extends Finder {
 
       ng.opened = true;
       this.queue.push(ng);
+      ng.parent = node;
     }
   }
 }
@@ -58,6 +60,7 @@ export class AStarFinder extends Finder {
 
   public init() {
     this.source.opened = true;
+    this.source.parent = null;
     this.openList = [this.source];
 
     this.source.gCost = 0;
@@ -113,6 +116,7 @@ export class AStarFinder extends Finder {
         ng.opened = true;
         ng.gCost = neighbourGCost;
         ng.hCost = this.getDistance(ng, this.dest);
+        ng.parent = node;
       }
     }
   }
