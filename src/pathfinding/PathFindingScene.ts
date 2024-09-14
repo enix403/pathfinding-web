@@ -47,15 +47,14 @@ export class PathFindingScene extends BaseScene {
 
       this.findPath({ signal: controller.signal })
         .then(path => {
-          if (path) {
-            this.grid.reset(true);
-            return this.tracePath(path, { signal: controller.signal });
-          } else {
-            console.log("(No Path) Ended");
-          }
+          this.grid.reset(true);
+          return this.tracePath(path, { signal: controller.signal });
         })
         .then(() => {
           console.log("Ended");
+        })
+        .catch(err => {
+          console.log(err.name);
         });
     });
   }
@@ -94,12 +93,12 @@ export class PathFindingScene extends BaseScene {
     opts: {
       signal?: AbortSignal;
     } = {}
-  ): Promise<Node[] | null> {
-    return new Promise(resolve => {
+  ): Promise<Node[]> {
+    return new Promise((resolve, reject) => {
       let { signal } = opts;
 
       if (signal?.aborted) {
-        resolve(null); // reject
+        reject(signal!.reason); // reject
         return;
       }
 
@@ -123,7 +122,7 @@ export class PathFindingScene extends BaseScene {
 
       const onAbort = () => {
         stopTask();
-        resolve(null); // reject;
+        reject(signal!.reason);
       };
 
       signal?.addEventListener("abort", onAbort);
@@ -140,7 +139,7 @@ export class PathFindingScene extends BaseScene {
           if (finder.found) {
             resolve(finder.path);
           } else {
-            resolve(null); // reject;
+            reject(new Error("Path not found")); // reject;
           }
         }
       }, 70);
@@ -151,11 +150,11 @@ export class PathFindingScene extends BaseScene {
     path: Node[],
     opts: { signal?: AbortSignal } = {}
   ): Promise<void> {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       let { signal } = opts;
 
       if (signal?.aborted) {
-        resolve(); // reject
+        reject(signal!.reason); // reject
         return;
       }
 
@@ -169,7 +168,7 @@ export class PathFindingScene extends BaseScene {
 
       const onAbort = () => {
         stopTask();
-        resolve(); // reject
+        reject(signal!.reason); // reject
       };
 
       signal?.addEventListener("abort", onAbort);
