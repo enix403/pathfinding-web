@@ -1,11 +1,9 @@
 import { Grid } from "./Grid";
 
 function clamp(val: number, min: number, max: number) {
-  if (val < min)
-    return min;
+  if (val < min) return min;
 
-  if (val > max)
-    return max;
+  if (val > max) return max;
 
   return val;
 }
@@ -16,11 +14,13 @@ class Area {
     public readonly startY: number,
     public readonly width: number,
     public readonly height: number,
+    public readonly lastCutOrient: "h" | "v",
+    public readonly lastCutAt: number
   ) {}
 }
 
 export function fillMaze(grid: Grid) {
-  let root = new Area(0, 0, grid.NumTilesX, grid.NumTilesY);
+  let root = new Area(0, 0, grid.NumTilesX, grid.NumTilesY, "v", -1);
 
   let stack = [root];
 
@@ -43,13 +43,21 @@ export function fillMaze(grid: Grid) {
     }
 
     let area1 = new Area(
-      area.startX, area.startY,
-      cutAt - area.startX, area.height
+      area.startX,
+      area.startY,
+      cutAt - area.startX,
+      area.height,
+      'v',
+      cutAt
     );
 
     let area2 = new Area(
-      cutAt + 1, area.startY,
-      (area.startX + area.width) - cutAt - 1, area.height
+      cutAt + 1,
+      area.startY,
+      area.startX + area.width - cutAt - 1,
+      area.height,
+      'v',
+      cutAt
     );
 
     stack.push(area1);

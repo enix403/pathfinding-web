@@ -49,10 +49,16 @@ export class PathFindingScene extends BaseScene {
 
     fillMaze(this.grid);
 
+    let walkableNodes = this.grid.getNodes().filter(n => n.walkable);
+    walkableNodes.sort(() => 0.5 - Math.random());
+
+    this.sourceNode = walkableNodes[0];
+    this.destNode = walkableNodes[1];
+
     // this.sourceNode = this.grid.getNode(3, 15);
     // this.destNode = this.grid.getNode(25, 2);
 
-    this.input.on('pointerdown', () => {
+    this.input.on("pointerdown", () => {
       this.mouseDown = true;
 
       let clickedNode = this.grid.worldToGrid(
@@ -62,19 +68,16 @@ export class PathFindingScene extends BaseScene {
 
       if (clickedNode === this.sourceNode) {
         this.paintMode = PaintMode.Source;
-      }
-      else if (clickedNode === this.destNode) {
+      } else if (clickedNode === this.destNode) {
         this.paintMode = PaintMode.Dest;
-      }
-      else if (clickedNode.walkable) {
+      } else if (clickedNode.walkable) {
         this.paintMode = PaintMode.Wall;
-      }
-      else {
+      } else {
         this.paintMode = PaintMode.Erase;
       }
     });
 
-    this.input.on('pointerup', () => {
+    this.input.on("pointerup", () => {
       this.mouseDown = false;
     });
 
@@ -111,6 +114,7 @@ export class PathFindingScene extends BaseScene {
       this.input.mousePointer.y
     );
 
+    // prettier-ignore
     if (this.mouseDown) {
       if (this.paintMode === PaintMode.Wall) {
         if (hoveredNode !== this.sourceNode && hoveredNode !== this.destNode)
@@ -120,10 +124,12 @@ export class PathFindingScene extends BaseScene {
         hoveredNode.walkable = true;
       }
       else if (this.paintMode === PaintMode.Source) {
-        this.sourceNode = hoveredNode;
+        if (hoveredNode.walkable)
+          this.sourceNode = hoveredNode;
       }
       else if (this.paintMode === PaintMode.Dest) {
-        this.destNode = hoveredNode;
+        if (hoveredNode.walkable)
+          this.destNode = hoveredNode;
       }
     }
 
