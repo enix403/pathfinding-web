@@ -97,27 +97,15 @@ export class PathFindingScene extends BaseScene {
           this.grid.reset(true);
 
           if (finder.found) {
-            this.startRetrace();
+            this.startTracePath(finder.path);
           }
         }, 0);
       }
     }, 30);
   }
 
-  private startRetrace() {
-    let path: Node[] = [];
-    let current = this.destNode!;
-
-    while (current !== this.sourceNode) {
-      path.push(current);
-      current = current.parent!;
-    }
-
-    path.reverse();
-    path.pop(); // Remove destNode;
-
+  private startTracePath(path: Node[]) {
     let nextIndex = 0;
-
     let intervalId: number;
     intervalId = setInterval(() => {
       if (nextIndex >= path.length) {
