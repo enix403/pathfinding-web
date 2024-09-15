@@ -5,8 +5,8 @@ import { Vector } from "~/math/vector";
 import { BFSFinder, AStarFinder } from "./algorithms";
 import { Grid } from "./Grid";
 import { Node } from "./Node";
-// import { fillMaze } from "./generation";
-import { fillMaze } from "./gen2";
+// import { fillMaze } from "./rec-subdivide";
+import { fillMaze } from "./rec-backtrack";
 
 export const COLOR_BLUE = 0x0a78cc;
 export const COLOR_DIM_BLUE = 0x072942;
