@@ -6,10 +6,14 @@ let pad = 4;
 
 export class Grid {
   private numTilesX: number;
-  public get NumTilesX() { return this.numTilesX; }
+  public get NumTilesX() {
+    return this.numTilesX;
+  }
 
   private numTilesY: number;
-  public get NumTilesY() { return this.numTilesY; }
+  public get NumTilesY() {
+    return this.numTilesY;
+  }
 
   private nodes: Node[];
 
@@ -90,5 +94,14 @@ export class Grid {
     tileY = Phaser.Math.Clamp(tileY, 0, this.numTilesY - 1);
 
     return this.getNode(tileX, tileY);
+  }
+
+  public isValid(tileX: number, tileY: number) {
+    return (
+      tileX >= 0 &&
+      tileX < this.numTilesX &&
+      tileY >= 0 &&
+      tileY < this.numTilesY
+    );
   }
 }
