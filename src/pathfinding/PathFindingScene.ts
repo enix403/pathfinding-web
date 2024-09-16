@@ -91,7 +91,7 @@ export class PathFindingScene extends BaseScene {
       this.findPath({ signal: controller.signal })
         .then(path => {
           if (path) {
-            this.grid.reset(true);
+            // this.grid.reset(true);
             return this.tracePath(path, { signal: controller.signal });
           }
         })

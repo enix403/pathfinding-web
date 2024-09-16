@@ -54,9 +54,13 @@ export class BFSFinder extends Finder {
   private queue: Node[];
 
   override init() {
-    this.source.opened = true;
-    this.source.parent = null;
-    this.queue = [this.source];
+    let { source } = this;
+
+    source.opened = true;
+    source.parent = null;
+    source.walkable = true;
+
+    this.queue = [source];
   }
 
   public step() {
@@ -74,7 +78,7 @@ export class BFSFinder extends Finder {
     }
 
     for (const ng of this.grid.getNeighbours(node)) {
-      if (ng.opened || ng.closed) {
+      if (!ng.walkable || ng.opened) {
         continue;
       }
 
@@ -101,6 +105,7 @@ export class AStarFinder extends Finder {
 
     source.opened = true;
     source.parent = null;
+    source.walkable = true;
 
     this.openList = [source];
 
@@ -141,7 +146,7 @@ export class AStarFinder extends Finder {
     }
 
     for (const ng of this.grid.getNeighbours(node)) {
-      if (ng.closed) {
+      if (!ng.walkable || ng.closed) {
         continue;
       }
 
