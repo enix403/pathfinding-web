@@ -6,7 +6,8 @@
     IconCpu,
     IconWall,
     IconEraser,
-    IconTopologyStar3
+    IconTopologyStar3,
+    IconPlayerPauseFilled
   } from "@tabler/icons-svelte";
   import type { PathFindingController } from "./pathfinding/PathFindingController";
 
@@ -32,6 +33,9 @@
 
   let paintMode: "wall" | "erase" = "wall";
   let speed: "slow" | "fast" | "faster" = "fast";
+
+  //
+  let running = false;
 </script>
 
 <p class="font-semibold text-sm">Select Algorithm</p>
@@ -150,12 +154,45 @@
 </div>
 
 <button
-  class="btn btn-success gap-x-2 mt-8"
+  class={clsx("btn gap-x-2 mt-8", running ? "btn-error" : "btn-success")}
   on:click={() => {
-    // .. run algorihm
-    controller.startPathFinding();
+    if (running) {
+      running = false;
+      controller.stop();
+    } else {
+      running = true;
+      controller.startPathFinding().then(() => {
+        running = false;
+      });
+    }
   }}
 >
-  <IconTopologyStar3 size={20} />
-  <strong>Run Algorithm</strong>
+  {#if running}
+    <IconPlayerPauseFilled size={20} />
+    <strong>Stop Algorithm</strong>
+  {:else}
+    <IconTopologyStar3 size={20} />
+    <strong>Run Algorithm</strong>
+  {/if}
 </button>
+
+<div class="flex gap-x-2">
+  <button
+    class="btn mt-2 btn-solid-warning flex-1"
+    disabled={running}
+    on:click={() => {
+      controller.clear();
+    }}
+  >
+    Clear
+  </button>
+  <button
+    class="btn mt-2 btn-solid-error flex-1"
+    disabled={running}
+    on:click={() => {
+      controller.reset();
+    }}
+  >
+    Reset
+  </button>
+</div>

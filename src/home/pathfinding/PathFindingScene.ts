@@ -2,7 +2,12 @@ import Phaser, { GameObjects } from "phaser";
 import { BaseScene } from "~/scene/BaseScene";
 import { Vector } from "~/math/vector";
 
-import { BFSFinder, AStarFinder, DijkstraFinder, DFSFinder } from "./algorithms";
+import {
+  BFSFinder,
+  AStarFinder,
+  DijkstraFinder,
+  DFSFinder
+} from "./algorithms";
 import { Grid } from "./Grid";
 import { Node } from "./Node";
 // import { fillMaze } from "./rec-subdivide";
@@ -18,7 +23,7 @@ const COLOR_HOVER = 0xadd5ff;
 const COLOR_SOURCE = 0xace817;
 const COLOR_DEST = 0xff885b;
 
-const COLOR_PATH = 0xFFFE6A;
+const COLOR_PATH = 0xfffe6a;
 const COLOR_OPENED = 0xfcaed9;
 const COLOR_CLOSED = 0x815fb3;
 
@@ -43,7 +48,7 @@ export class PathFindingScene extends BaseScene {
   private paintMode = PaintMode.Wall;
 
   public create() {
-    let grid = this.grid = new Grid(
+    let grid = (this.grid = new Grid(
       this,
       Vector.zero,
       new Vector(
@@ -51,15 +56,10 @@ export class PathFindingScene extends BaseScene {
         +this.game.config.width,
         +this.game.config.height
       )
-    );
+    ));
 
     this.backSheet = this.add
-      .rectangle(
-        0,
-        0,
-        grid.OuterWidth,
-        grid.OuterHeight,
-      )
+      .rectangle(0, 0, grid.OuterWidth, grid.OuterHeight)
       .setOrigin(0, 0)
       .setFillStyle(COLOR_LINES)
       .setDepth(0);
@@ -162,7 +162,7 @@ export class PathFindingScene extends BaseScene {
 
       // let finder = new BFSFinder(
       // let finder = new DFSFinder(
-        // let finder = new DijkstraFinder(
+      // let finder = new DijkstraFinder(
       let finder = new AStarFinder(
         this.grid,
         this.sourceNode!,
@@ -249,8 +249,19 @@ export class PathFindingScene extends BaseScene {
     });
   }
 
+  public clear() {
+    this.grid.reset();
+  }
+
+  public reset() {
+    // TODO: make beter api
+    this.grid.getNodes().forEach(node => {
+      node.reset();
+      node.walkable = true;
+    });
+  }
+
   public override destroy(): void {
-    // this.currentAbortController?.abort();
     this.backSheet.destroy();
     this.grid.destroy();
   }

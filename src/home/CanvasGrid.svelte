@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { PathFindingScene } from "./pathfinding/PathFindingScene";
   import { PathFindingController } from "./pathfinding/PathFindingController";
   import type { VoidCallback } from "~/types/utility";
@@ -10,7 +10,6 @@
 
   onMount(() => {
     const { game, scene } = PathFindingScene.createGame(canvas!);
-    window.game = game;
 
     let controller = new PathFindingController(scene);
     onInit?.(controller);

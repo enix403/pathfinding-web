@@ -14,7 +14,7 @@ export class PathFindingController {
     this.runningCount = 0;
   }
 
-  public startPathFinding() {
+  public async startPathFinding() {
     this.currentAbortController?.abort();
 
     let controller = new AbortController();
@@ -22,7 +22,7 @@ export class PathFindingController {
 
     this.runningCount++;
 
-    this.scene
+    await this.scene
       .findPath({ signal: controller.signal })
       .then(path => {
         if (path) {
@@ -39,6 +39,18 @@ export class PathFindingController {
       }).finally(() => {
         this.runningCount--;
       });
+  }
+
+  public stop() {
+    this.currentAbortController?.abort();
+  }
+
+  public clear() {
+    this.scene.clear();
+  }
+
+  public reset() {
+    this.scene.reset();
   }
 
   public destroy() {
