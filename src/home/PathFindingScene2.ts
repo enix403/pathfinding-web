@@ -15,16 +15,6 @@ export const COLOR_ORANGE = 0xba7816;
 export class PathFindingScene2 extends BaseScene {
 
   public create() {
-    // this.grid = new Grid(
-    //   this,
-    //   Vector.zero,
-      // new Vector(
-      //   //
-      //   +this.game.config.width,
-      //   +this.game.config.height
-      // )
-    // );
-
     let worldTopLeft = Vector.zero;
     let gridWorldSize = new Vector(
       //
@@ -32,8 +22,8 @@ export class PathFindingScene2 extends BaseScene {
       +this.game.config.height
     );
 
-    let tileSize = 40;
-    let pad = 4;
+    let tileSize = 25;
+    let pad = 1;
 
     let numTilesX = Math.floor((gridWorldSize.x + pad) / (tileSize + pad));
     let numTilesY = Math.floor((gridWorldSize.y + pad) / (tileSize + pad));
@@ -48,7 +38,7 @@ export class PathFindingScene2 extends BaseScene {
         let worldY = worldTopLeft.y + (tileSize + pad) * y;
 
         let node = new Node(this, x, y, worldX, worldY, tileSize);
-        node.setColor(COLOR_ORANGE);
+        node.setColor(0xffffff);
         // nodes.push(node);
       }
     }
@@ -62,9 +52,9 @@ export class PathFindingScene2 extends BaseScene {
     let game = new Phaser.Game({
       scene: scene,
       canvas: canvas,
-      width: Math.round(rect.width * 2),
-      height: Math.round(rect.height * 2),
-      backgroundColor: "#222124",
+      width: Math.round(rect.width),
+      height: Math.round(rect.height),
+      backgroundColor: "#6EB1A5",
       type: Phaser.CANVAS,
       powerPreference: "high-performance",
       audio: { noAudio: true },
