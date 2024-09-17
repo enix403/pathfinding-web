@@ -1,10 +1,11 @@
 import { Vector } from "~/math/vector";
 import { Node } from "./Node";
-
-let tileSize = 26;
-let pad = 4;
+import { GameObjects } from "phaser";
 
 export class Grid {
+  private tileSize = 26;
+  private pad = 1;
+
   private numTilesX: number;
   public get NumTilesX() {
     return this.numTilesX;
@@ -15,6 +16,7 @@ export class Grid {
     return this.numTilesY;
   }
 
+  private backSheet: GameObjects.Rectangle;
   private nodes: Node[];
 
   constructor(
@@ -22,17 +24,26 @@ export class Grid {
     public readonly worldTopLeft: Vector,
     public readonly gridWorldSize: Vector
   ) {
-    this.numTilesX = Math.floor((gridWorldSize.x + pad) / (tileSize + pad));
-    this.numTilesY = Math.floor((gridWorldSize.y + pad) / (tileSize + pad));
+    let outerTileSize = this.tileSize + this.pad;
+
+    this.numTilesX = Math.floor((gridWorldSize.x + this.pad) / outerTileSize);
+    this.numTilesY = Math.floor((gridWorldSize.y + this.pad) / outerTileSize);
+
+    // Adjust the tileSize by a little amount so that there is
+    // no empty space at the end
+    this.tileSize = (gridWorldSize.x + this.pad) / this.numTilesX - this.pad;
+
+    // Do not forget to outerTileSize too
+    outerTileSize = this.tileSize + this.pad;
 
     this.nodes = [];
 
     for (let y = 0; y < this.numTilesY; ++y) {
       for (let x = 0; x < this.numTilesX; ++x) {
-        let worldX = this.worldTopLeft.x + (tileSize + pad) * x;
-        let worldY = this.worldTopLeft.y + (tileSize + pad) * y;
+        let worldX = this.worldTopLeft.x + outerTileSize * x;
+        let worldY = this.worldTopLeft.y + outerTileSize * y;
 
-        let node = new Node(scene, x, y, worldX, worldY, tileSize);
+        let node = new Node(scene, x, y, worldX, worldY, this.tileSize);
         this.nodes.push(node);
       }
     }

@@ -1,11 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { PathFindingScene2 } from "./PathFindingScene2";
+  import { PathFindingScene } from "./pathfinding/PathFindingScene";
 
   let canvas: HTMLCanvasElement | null = null;
 
   onMount(() => {
-    return PathFindingScene2.createGame(canvas!);
+    return PathFindingScene.createGame(canvas!);
   });
 </script>
 

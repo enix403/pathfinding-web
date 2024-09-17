@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { BaseScene } from "~/scene/BaseScene";
 import { Vector } from "~/math/vector";
-import { Node } from '../pathfinding/Node';
+import { Node } from './pathfinding/Node';
 
 export const COLOR_BLUE = 0x0a78cc;
 export const COLOR_DIM_BLUE = 0x072942;
@@ -10,7 +10,6 @@ export const COLOR_RED = 0xeb3a34;
 export const COLOR_GREEN = 0x37eb34;
 export const COLOR_CYAN = 0x15edc2;
 export const COLOR_ORANGE = 0xba7816;
-
 
 export class PathFindingScene2 extends BaseScene {
 

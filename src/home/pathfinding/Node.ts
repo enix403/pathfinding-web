@@ -19,7 +19,7 @@ export class Node {
     public worldSize: number
   ) {
     this.gameObject = scene.add
-      .rectangle(worldX, worldY, worldSize, worldSize, 0xf0f000)
+      .rectangle(worldX, worldY, worldSize, worldSize, 0xffffff)
       .setOrigin(0, 0);
   }
 
@@ -33,6 +33,6 @@ export class Node {
   }
 
   public setColor(color: number) {
-    this.gameObject.setFillStyle(color);
+    // this.gameObject.setFillStyle(color);
   }
 }

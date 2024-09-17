@@ -27,6 +27,7 @@ enum PaintMode {
 }
 
 export class PathFindingScene extends BaseScene {
+  private backsheet: Grid;
   private grid: Grid;
   private sourceNode: Node | null = null;
   private destNode: Node | null = null;
@@ -47,6 +48,16 @@ export class PathFindingScene extends BaseScene {
         +this.game.config.height
       )
     );
+
+    // this.backSheet = scene.add
+    //   .rectangle(
+    //     0,
+    //     0,
+    //     outerTileSize * this.numTilesX,
+    //     outerTileSize * this.numTilesY
+    //   )
+    //   .setOrigin(0, 0)
+    //   .setFillStyle(0x6EB1A5);
 
     // fillMaze(this.grid);
 
@@ -258,25 +269,27 @@ export class PathFindingScene extends BaseScene {
       }, INTERVAL_TRACE);
     });
   }
-}
 
-export function createGame(canvas: HTMLCanvasElement) {
-  let scene = new PathFindingScene();
+  public static createGame(canvas: HTMLCanvasElement) {
+    let rect = canvas.getBoundingClientRect();
 
-  let game = new Phaser.Game({
-    scene: scene,
-    canvas: canvas,
-    width: 900,
-    height: 600,
-    backgroundColor: "#222124",
-    type: Phaser.CANVAS,
-    powerPreference: "high-performance",
-    audio: { noAudio: true },
-    banner: false
-  });
+    let scene = new PathFindingScene();
 
-  return () => {
-    scene.destroy();
-    game.destroy(false);
-  };
+    let game = new Phaser.Game({
+      scene: scene,
+      canvas: canvas,
+      width: Math.round(rect.width),
+      height: Math.round(rect.height),
+      backgroundColor: "#ffffff",
+      type: Phaser.CANVAS,
+      powerPreference: "high-performance",
+      audio: { noAudio: true },
+      banner: false
+    });
+
+    return () => {
+      scene.destroy();
+      game.destroy(false);
+    };
+  }
 }
