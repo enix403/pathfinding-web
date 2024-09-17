@@ -18,7 +18,7 @@ const COLOR_LINES = 0x8ed4c7;
 
 const COLOR_UNVISITED = 0xffffff;
 
-const COLOR_WALL = 0x47370c;
+const COLOR_WALL = 0x0c1747;
 const COLOR_HOVER = 0xadd5ff;
 
 const COLOR_SOURCE = 0xace817;
@@ -49,11 +49,10 @@ export class PathFindingScene extends BaseScene {
   private paintMode = PaintMode.Wall;
   private userPaintMode = UserPaintMode.Wall;
 
-  // private running = false;
-  private runningCount: number;
+  private runningCount: number = 0;
 
   public get IsRunning() {
-    return this.runningCount === 0;
+    return this.runningCount !== 0;
   }
 
   public create() {
@@ -73,7 +72,7 @@ export class PathFindingScene extends BaseScene {
       .setFillStyle(COLOR_LINES)
       .setDepth(0);
 
-    // fillMaze(this.grid);
+    fillMaze(this.grid);
 
     let walkableNodes = grid.getNodes().filter(n => n.walkable);
     walkableNodes.sort(() => 0.5 - Math.random());
@@ -120,11 +119,11 @@ export class PathFindingScene extends BaseScene {
       else if (this.paintMode === PaintMode.Erase) {
         hoveredNode.walkable = true;
       }
-      else if (this.paintMode === PaintMode.Source) {
+      else if (this.paintMode === PaintMode.Source && !this.IsRunning) {
         if (hoveredNode.walkable)
           this.sourceNode = hoveredNode;
       }
-      else if (this.paintMode === PaintMode.Dest) {
+      else if (this.paintMode === PaintMode.Dest && !this.IsRunning) {
         if (hoveredNode.walkable)
           this.destNode = hoveredNode;
       }
