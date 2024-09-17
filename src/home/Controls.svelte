@@ -41,7 +41,12 @@
   let paintMode: UserPaintMode = UserPaintMode.Wall;
   $: controller.setUserPaintMode(paintMode);
 
-  let speed: "slow" | "fast" | "faster" = "fast";
+  enum Speed {
+    Slow = 220,
+    Fast = 50,
+    Faster = 10
+  }
+  let speed = Speed.Fast;
 
   //
   let running = false;
@@ -139,27 +144,27 @@
 <div class="flex mt-2 gap-x-1">
   <button
     class="btn gap-x-1 btn-sm"
-    class:btn-secondary={speed === "slow"}
+    class:btn-secondary={speed === Speed.Slow}
     on:click={() => {
-      speed = "slow";
+      speed = Speed.Slow;
     }}
   >
     Slow
   </button>
   <button
     class="btn gap-x-1 btn-sm"
-    class:btn-primary={speed === "fast"}
+    class:btn-primary={speed === Speed.Fast}
     on:click={() => {
-      speed = "fast";
+      speed = Speed.Fast;
     }}
   >
     Fast
   </button>
   <button
     class="btn gap-x-1 btn-sm"
-    class:btn-error={speed === "faster"}
+    class:btn-error={speed === Speed.Faster}
     on:click={() => {
-      speed = "faster";
+      speed = Speed.Faster;
     }}
   >
     Faster
@@ -183,7 +188,10 @@
       } else {
         running = true;
         controller
-          .startPathFinding(algorithms[selectedAlgorithmIndex].finderClass)
+          .startPathFinding(
+            algorithms[selectedAlgorithmIndex].finderClass,
+            speed
+          )
           .then(() => {
             running = false;
           });

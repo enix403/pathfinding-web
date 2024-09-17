@@ -14,17 +14,25 @@ export class PathFindingController {
     this.currentAbortController = null;
   }
 
-  public async startPathFinding(finderClass: FinderClass) {
+  public async startPathFinding(
+    finderClass: FinderClass,
+    stepInterval: number = 30
+  ) {
     this.currentAbortController?.abort();
 
     let controller = new AbortController();
     this.currentAbortController = controller;
 
+    let traceStepInterval = Math.round(stepInterval * 0.5);
+
     await this.scene
-      .findPath(finderClass, { signal: controller.signal })
+      .findPath(finderClass, { stepInterval, signal: controller.signal })
       .then(path => {
         if (path) {
-          return this.scene.tracePath(path, { signal: controller.signal });
+          return this.scene.tracePath(path, {
+            stepInterval: traceStepInterval,
+            signal: controller.signal
+          });
         }
       })
       .then(() => {
@@ -34,7 +42,6 @@ export class PathFindingController {
         if (err.name === "AbortError") {
           // Aborted
         }
-
       });
   }
 
@@ -43,10 +50,12 @@ export class PathFindingController {
   }
 
   public clear() {
+    this.currentAbortController?.abort();
     this.scene.clear();
   }
 
   public reset() {
+    this.currentAbortController?.abort();
     this.scene.reset();
   }
 

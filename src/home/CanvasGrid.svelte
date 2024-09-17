@@ -15,7 +15,7 @@
     onInit?.(controller);
 
     return () => {
-      controller?.destroy();
+      controller.destroy();
       scene.destroy();
       game.destroy(false);
     };

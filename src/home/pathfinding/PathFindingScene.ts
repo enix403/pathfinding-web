@@ -25,7 +25,6 @@ const COLOR_OPENED = 0xfcaed9;
 const COLOR_CLOSED = 0x815fb3;
 
 const INTERVAL_FIND = 30;
-const INTERVAL_TRACE = 10;
 
 enum PaintMode {
   Wall,
@@ -164,6 +163,7 @@ export class PathFindingScene extends BaseScene implements PathRequest {
   public async findPath(
     finderClass: FinderClass,
     opts: {
+      stepInterval?: number;
       signal?: AbortSignal;
     } = {}
   ): Promise<Node[] | null> {
@@ -179,11 +179,12 @@ export class PathFindingScene extends BaseScene implements PathRequest {
   private findPathInner(
     finderClass: FinderClass,
     opts: {
+      stepInterval?: number;
       signal?: AbortSignal;
     } = {}
   ): Promise<Node[] | null> {
     return new Promise((resolve, reject) => {
-      let { signal } = opts;
+      let { signal, stepInterval } = opts;
 
       if (signal?.aborted) {
         reject(signal!.reason); // reject
@@ -225,16 +226,19 @@ export class PathFindingScene extends BaseScene implements PathRequest {
             // reject(new Error("Path not found")); // reject;
           }
         }
-      }, INTERVAL_FIND);
+      }, stepInterval ?? 30);
     });
   }
 
   public tracePath(
     path: Node[],
-    opts: { signal?: AbortSignal } = {}
+    opts: {
+      stepInterval?: number;
+      signal?: AbortSignal;
+    } = {}
   ): Promise<void> {
     return new Promise((resolve, reject) => {
-      let { signal } = opts;
+      let { signal, stepInterval } = opts;
 
       if (signal?.aborted) {
         reject(signal!.reason); // reject
@@ -269,7 +273,7 @@ export class PathFindingScene extends BaseScene implements PathRequest {
 
         let node = path[nextIndex++];
         node.pathNode = true;
-      }, INTERVAL_TRACE);
+      }, stepInterval ?? 10);
     });
   }
 
