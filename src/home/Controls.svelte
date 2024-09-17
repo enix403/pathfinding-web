@@ -40,7 +40,7 @@
     { title: "Recurisve Backtracking", genClass: RecursiveBacktrackGenerator }
   ];
 
-  let selectedMazeIndex = 2;
+  let selectedMazeIndex = 0;
 
   function generateMaze() {
     const genClass = mazeFills[selectedMazeIndex]?.genClass;
