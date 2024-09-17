@@ -34,7 +34,7 @@ export class Node {
   }
 
   public setColor(color: number) {
-    // this.gameObject.setFillStyle(color);
+    this.gameObject.setFillStyle(color);
   }
 
   public destroy() {
