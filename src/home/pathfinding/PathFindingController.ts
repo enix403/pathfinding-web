@@ -1,4 +1,5 @@
 import type { PathFindingScene } from "./PathFindingScene";
+import { UserPaintMode } from "./UserPaintMode";
 
 export class PathFindingController {
   private currentAbortController: AbortController | null;
@@ -51,6 +52,10 @@ export class PathFindingController {
 
   public reset() {
     this.scene.reset();
+  }
+
+  public setUserPaintMode(mode: UserPaintMode) {
+    this.scene.setUserPaintMode(mode);
   }
 
   public destroy() {

@@ -12,6 +12,7 @@ import { Grid } from "./Grid";
 import { Node } from "./Node";
 // import { fillMaze } from "./rec-subdivide";
 import { fillMaze } from "./rec-backtrack";
+import { UserPaintMode } from "./UserPaintMode";
 
 const COLOR_LINES = 0x8ed4c7;
 
@@ -46,6 +47,7 @@ export class PathFindingScene extends BaseScene {
   // Paiting
   private mouseDown = false;
   private paintMode = PaintMode.Wall;
+  private userPaintMode = UserPaintMode.Wall;
 
   public create() {
     let grid = (this.grid = new Grid(
@@ -84,7 +86,7 @@ export class PathFindingScene extends BaseScene {
         this.paintMode = PaintMode.Source;
       } else if (clickedNode === this.destNode) {
         this.paintMode = PaintMode.Dest;
-      } else if (clickedNode.walkable) {
+      } else if (this.userPaintMode === UserPaintMode.Wall) {
         this.paintMode = PaintMode.Wall;
       } else {
         this.paintMode = PaintMode.Erase;
@@ -143,6 +145,10 @@ export class PathFindingScene extends BaseScene {
 
       node.setColor(color);
     });
+  }
+
+  public setUserPaintMode(mode: UserPaintMode) {
+    this.userPaintMode = mode;
   }
 
   public findPath(

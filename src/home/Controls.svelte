@@ -10,6 +10,7 @@
     IconPlayerPauseFilled
   } from "@tabler/icons-svelte";
   import type { PathFindingController } from "./pathfinding/PathFindingController";
+  import { UserPaintMode } from "./pathfinding/UserPaintMode";
 
   export let controller: PathFindingController;
 
@@ -31,7 +32,9 @@
 
   let selectedMazeIndex = 0;
 
-  let paintMode: "wall" | "erase" = "wall";
+  let paintMode: UserPaintMode = UserPaintMode.Wall;
+  $: controller.setUserPaintMode(paintMode);
+
   let speed: "slow" | "fast" | "faster" = "fast";
 
   //
@@ -102,9 +105,9 @@
 <div class="flex mt-2 gap-x-1">
   <button
     class="btn gap-x-1 btn-sm"
-    class:btn-primary={paintMode === "wall"}
+    class:btn-primary={paintMode === UserPaintMode.Wall}
     on:click={() => {
-      paintMode = "wall";
+      paintMode = UserPaintMode.Wall;
     }}
   >
     <IconWall size={20} />
@@ -112,9 +115,9 @@
   </button>
   <button
     class="btn gap-x-1 btn-sm"
-    class:btn-secondary={paintMode === "erase"}
+    class:btn-secondary={paintMode === UserPaintMode.Erase}
     on:click={() => {
-      paintMode = "erase";
+      paintMode = UserPaintMode.Erase;
     }}
   >
     <IconEraser size={20} />
