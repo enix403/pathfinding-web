@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import Phaser, { GameObjects } from "phaser";
 import { BaseScene } from "~/scene/BaseScene";
 import { Vector } from "~/math/vector";
 
@@ -27,7 +27,7 @@ enum PaintMode {
 }
 
 export class PathFindingScene extends BaseScene {
-  private backsheet: Grid;
+  private backSheet: GameObjects.Rectangle;
   private grid: Grid;
   private sourceNode: Node | null = null;
   private destNode: Node | null = null;
@@ -39,7 +39,7 @@ export class PathFindingScene extends BaseScene {
   private paintMode = PaintMode.Wall;
 
   public create() {
-    this.grid = new Grid(
+    let grid = this.grid = new Grid(
       this,
       Vector.zero,
       new Vector(
@@ -49,19 +49,20 @@ export class PathFindingScene extends BaseScene {
       )
     );
 
-    // this.backSheet = scene.add
-    //   .rectangle(
-    //     0,
-    //     0,
-    //     outerTileSize * this.numTilesX,
-    //     outerTileSize * this.numTilesY
-    //   )
-    //   .setOrigin(0, 0)
-    //   .setFillStyle(0x6EB1A5);
+    this.backSheet = this.add
+      .rectangle(
+        0,
+        0,
+        grid.OuterWidth,
+        grid.OuterHeight,
+      )
+      .setOrigin(0, 0)
+      .setFillStyle(0x6EB1A5)
+      .setDepth(0);
 
     // fillMaze(this.grid);
 
-    let walkableNodes = this.grid.getNodes().filter(n => n.walkable);
+    let walkableNodes = grid.getNodes().filter(n => n.walkable);
     walkableNodes.sort(() => 0.5 - Math.random());
 
     this.sourceNode = walkableNodes[0];
@@ -70,7 +71,7 @@ export class PathFindingScene extends BaseScene {
     this.input.on("pointerdown", () => {
       this.mouseDown = true;
 
-      let clickedNode = this.grid.worldToGrid(
+      let clickedNode = grid.worldToGrid(
         this.input.mousePointer.x,
         this.input.mousePointer.y
       );
@@ -268,6 +269,12 @@ export class PathFindingScene extends BaseScene {
         node.pathNode = true;
       }, INTERVAL_TRACE);
     });
+  }
+
+  public override destroy(): void {
+    this.currentAbortController?.abort();
+    this.backSheet.destroy();
+    this.grid.destroy();
   }
 
   public static createGame(canvas: HTMLCanvasElement) {

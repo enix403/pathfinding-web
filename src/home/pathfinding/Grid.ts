@@ -16,6 +16,14 @@ export class Grid {
     return this.numTilesY;
   }
 
+  public get OuterWidth() {
+    return (this.tileSize + this.pad) * this.numTilesX;
+  }
+
+  public get OuterHeight() {
+    return (this.tileSize + this.pad) * this.numTilesY;
+  }
+
   private backSheet: GameObjects.Rectangle;
   private nodes: Node[];
 
@@ -114,5 +122,11 @@ export class Grid {
       tileY >= 0 &&
       tileY < this.numTilesY
     );
+  }
+
+  public destroy() {
+    this.nodes.forEach((node) => {
+      node.destroy();
+    })
   }
 }

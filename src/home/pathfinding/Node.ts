@@ -20,7 +20,8 @@ export class Node {
   ) {
     this.gameObject = scene.add
       .rectangle(worldX, worldY, worldSize, worldSize, 0xffffff)
-      .setOrigin(0, 0);
+      .setOrigin(0, 0)
+      .setDepth(1);
   }
 
   public reset(keepParents = false) {
@@ -35,4 +36,9 @@ export class Node {
   public setColor(color: number) {
     // this.gameObject.setFillStyle(color);
   }
+
+  public destroy() {
+    this.gameObject.destroy();
+  }
+
 }
