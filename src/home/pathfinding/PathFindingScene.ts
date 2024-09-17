@@ -163,7 +163,7 @@ export class PathFindingScene extends Scene implements PathRequest {
       return;
     }
 
-    this.grid.reset();
+    this.reset();
     mazeGen.generate(this.grid);
   }
 

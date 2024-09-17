@@ -1,4 +1,5 @@
 import { FinderClass } from "./algorithms";
+import { MazeGenerator } from "./mazegen/MazeGenerator";
 import type { PathFindingScene } from "./PathFindingScene";
 import { UserPaintMode } from "./UserPaintMode";
 
@@ -61,6 +62,10 @@ export class PathFindingController {
 
   public setUserPaintMode(mode: UserPaintMode) {
     this.scene.setUserPaintMode(mode);
+  }
+
+  public generateMaze(mazeGen: MazeGenerator) {
+    this.scene.generateMaze(mazeGen);
   }
 
   public destroy() {

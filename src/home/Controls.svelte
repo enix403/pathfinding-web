@@ -40,7 +40,15 @@
     { title: "Recurisve Backtracking", genClass: RecursiveBacktrackGenerator }
   ];
 
-  let selectedMazeIndex = 0;
+  let selectedMazeIndex = 2;
+
+  function generateMaze() {
+    const genClass = mazeFills[selectedMazeIndex]?.genClass;
+
+    if (!genClass) return;
+
+    controller.generateMaze(new genClass());
+  }
 
   let paintMode: UserPaintMode = UserPaintMode.Wall;
   $: controller.setUserPaintMode(paintMode);
@@ -115,13 +123,23 @@
             selectedMazeIndex = index;
             // @ts-ignore
             document.activeElement?.blur();
+
+            setTimeout(() => {
+              generateMaze();
+            }, 0);
           }}
         />
       {/each}
     </div>
   </div>
   <span class="tooltip tooltip-bottom" data-tooltip="Generate New Maze">
-    <button disabled={running} class="btn btn-circle btn-secondary">
+    <button
+      on:click={() => {
+        generateMaze();
+      }}
+      disabled={running}
+      class="btn btn-circle btn-secondary"
+    >
       <IconRefreshDot />
     </button>
   </span>
