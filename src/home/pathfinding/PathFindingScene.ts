@@ -73,9 +73,7 @@ export class PathFindingScene extends Scene implements PathRequest {
       .setFillStyle(COLOR_LINES)
       .setDepth(0);
 
-    // fillMaze(this.grid);
-
-    let walkableNodes = grid.getNodes().filter(n => n.walkable);
+    let walkableNodes = [...grid.getNodes()];
     walkableNodes.sort(() => 0.5 - Math.random());
 
     this.sourceNode = walkableNodes[0];
@@ -165,6 +163,26 @@ export class PathFindingScene extends Scene implements PathRequest {
 
     this.reset();
     mazeGen.generate(this.grid);
+
+    let changeSource = !this.sourceNode?.walkable;
+    let changeDest = !this.destNode?.walkable;
+
+    if (changeSource || changeDest) {
+      let walkableNodes = this.grid.getNodes().filter(node => node.walkable);
+      walkableNodes.sort(() => 0.5 - Math.random());
+
+      let i = 0;
+
+      if (changeSource) {
+        this.sourceNode = walkableNodes[i++] || this.grid.getNode(0, 0);
+        this.sourceNode.walkable = true;
+      }
+
+      if (changeDest) {
+        this.destNode = walkableNodes[i++] || this.grid.getNode(0, 1);
+        this.destNode.walkable = true;
+      }
+    }
   }
 
   public async findPath(
