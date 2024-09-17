@@ -8,6 +8,7 @@ import { Node } from "./Node";
 import { fillMaze } from "./rec-backtrack";
 import { UserPaintMode } from "./UserPaintMode";
 import { PathRequest } from "./PathRequest";
+import { MazeGenerator } from "./mazegen/MazeGenerator";
 
 const COLOR_LINES = 0x8ed4c7;
 
@@ -155,6 +156,15 @@ export class PathFindingScene extends Scene implements PathRequest {
 
   public setUserPaintMode(mode: UserPaintMode) {
     this.userPaintMode = mode;
+  }
+
+  public generateMaze(mazeGen: MazeGenerator) {
+    if (this.IsRunning) {
+      return;
+    }
+
+    this.grid.reset();
+    mazeGen.generate(this.grid);
   }
 
   public async findPath(

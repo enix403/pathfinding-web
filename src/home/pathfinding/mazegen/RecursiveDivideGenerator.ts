@@ -1,4 +1,5 @@
-import { Grid } from "./Grid";
+import { MazeGenerator } from "./MazeGenerator";
+import type { Grid } from "../Grid";
 
 function randrange(min: number, max: number) {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -71,14 +72,16 @@ function wrapOuterWalls(grid: Grid, width: number, height: number) {
   }
 }
 
-export function fillMaze(grid: Grid) {
-  let width = grid.NumTilesX;
-  let height = grid.NumTilesY;
+export class RecursiveDivideGenerator implements MazeGenerator {
+  public generate(grid: Grid) {
+    let width = grid.NumTilesX;
+    let height = grid.NumTilesY;
 
-  if (width % 2) width--;
+    if (width % 2) width--;
 
-  if (height % 2) height--;
+    if (height % 2) height--;
 
-  wrapOuterWalls(grid, width, height);
-  subdivide(grid, 1, width - 2, 1, height - 2, false);
+    wrapOuterWalls(grid, width, height);
+    subdivide(grid, 1, width - 2, 1, height - 2, false);
+  }
 }

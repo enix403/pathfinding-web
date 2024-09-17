@@ -18,6 +18,10 @@
     DijkstraFinder
   } from "./pathfinding/algorithms";
 
+  import { EmptyMazeGenerator } from "./pathfinding/mazegen/EmptyMazeGenerator";
+  import { RecursiveDivideGenerator } from "./pathfinding/mazegen/RecursiveDivideGenerator";
+  import { RecursiveBacktrackGenerator } from "./pathfinding/mazegen/RecursiveBacktrackGenerator";
+
   export let controller: PathFindingController;
 
   const algorithms = [
@@ -30,10 +34,9 @@
   let selectedAlgorithmIndex = -1;
 
   const mazeFills = [
-    { title: "No Maze" },
-    { title: "Recurisve Divide" },
-    { title: "Recurisve Backtracking" },
-    { title: "Binary Tree Maze" }
+    { title: "No Maze", genClass: EmptyMazeGenerator },
+    { title: "Recurisve Divide", genClass: RecursiveDivideGenerator },
+    { title: "Recurisve Backtracking", genClass: RecursiveBacktrackGenerator },
   ];
 
   let selectedMazeIndex = 0;
