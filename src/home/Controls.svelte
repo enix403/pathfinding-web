@@ -2,7 +2,12 @@
   import clsx from "clsx";
   import DropdownOption from "./DropdownOption.svelte";
 
-  import { IconCpu, IconWall, IconEraser } from "@tabler/icons-svelte";
+  import {
+    IconCpu,
+    IconWall,
+    IconEraser,
+    IconTopologyStar3
+  } from "@tabler/icons-svelte";
 
   const algorithms = [
     { title: "Breadth First Search" },
@@ -140,3 +145,8 @@
     Faster
   </button>
 </div>
+
+<button class="btn btn-success gap-x-2 mt-8" on:click={() => {}}>
+  <IconTopologyStar3 size={20} />
+  <strong>Run Algorithm</strong>
+</button>
