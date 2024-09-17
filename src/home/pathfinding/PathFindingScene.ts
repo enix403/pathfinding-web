@@ -8,28 +8,18 @@ import { Node } from "./Node";
 // import { fillMaze } from "./rec-subdivide";
 import { fillMaze } from "./rec-backtrack";
 
-// const COLOR_LINES = 0x6EB1A5;
 const COLOR_LINES = 0x8ed4c7;
 
 const COLOR_UNVISITED = 0xffffff;
 
-const COLOR_WALL = 0x0C3547;
+const COLOR_WALL = 0x47370c;
 const COLOR_HOVER = 0xadd5ff;
 
-// const COLOR_SOURCE = 0x37eb34;
-// const COLOR_SOURCE = 0xBEDC74;
 const COLOR_SOURCE = 0xace817;
-// const COLOR_DEST = 0xeb3a34;
 const COLOR_DEST = 0xff885b;
 
-// const COLOR_PATH = 0xf2e707;
-// const COLOR_PATH = 0xfcba03;
 const COLOR_PATH = 0xFFFE6A;
-// const COLOR_OPENED = 0x15edc2;
-// const COLOR_OPENED = 0xE3A5C7;
 const COLOR_OPENED = 0xfcaed9;
-// const COLOR_CLOSED = 0xba7816;
-// const COLOR_CLOSED = 0x694F8E;
 const COLOR_CLOSED = 0x815fb3;
 
 const INTERVAL_FIND = 30;
