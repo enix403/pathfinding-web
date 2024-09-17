@@ -290,8 +290,8 @@ export class PathFindingScene extends BaseScene {
   }
 
   public override destroy(): void {
-    this.backSheet.destroy();
-    this.grid.destroy();
+    this.backSheet?.destroy();
+    this.grid?.destroy();
   }
 
   public static createGame(canvas: HTMLCanvasElement) {

@@ -11,7 +11,6 @@ export class PathFindingController {
 
   constructor(private readonly scene: PathFindingScene) {
     this.currentAbortController = null;
-    // this.runningCount = 0;
   }
 
   public async startPathFinding() {
@@ -19,8 +18,6 @@ export class PathFindingController {
 
     let controller = new AbortController();
     this.currentAbortController = controller;
-
-    // this.runningCount++;
 
     await this.scene
       .findPath({ signal: controller.signal })
@@ -36,6 +33,7 @@ export class PathFindingController {
         if (err.name === "AbortError") {
           // Aborted
         }
+
       });
   }
 
