@@ -7,7 +7,8 @@
     IconWall,
     IconEraser,
     IconTopologyStar3,
-    IconPlayerPauseFilled
+    IconPlayerPauseFilled,
+    IconRefreshDot
   } from "@tabler/icons-svelte";
   import type { PathFindingController } from "./pathfinding/PathFindingController";
   import { UserPaintMode } from "./pathfinding/UserPaintMode";
@@ -34,9 +35,9 @@
   let selectedAlgorithmIndex = -1;
 
   const mazeFills = [
-    { title: "No Maze", genClass: EmptyMazeGenerator },
+    { title: "Empty Grid", genClass: EmptyMazeGenerator },
     { title: "Recurisve Divide", genClass: RecursiveDivideGenerator },
-    { title: "Recurisve Backtracking", genClass: RecursiveBacktrackGenerator },
+    { title: "Recurisve Backtracking", genClass: RecursiveBacktrackGenerator }
   ];
 
   let selectedMazeIndex = 0;
@@ -92,31 +93,38 @@
 </div>
 
 <p class="font-semibold text-sm mt-4">Select Maze</p>
-<div class="dropdown w-full mt-2">
-  <button
-    disabled={running}
-    class={clsx("btn btn-block gap-x-1 btn-solid-success")}
-  >
-    <strong>
-      {mazeFills[selectedMazeIndex].title}
-    </strong>
-  </button>
+<div class="flex gap-x-2 items-center mt-2">
+  <div class="dropdown flex-1">
+    <button
+      disabled={running}
+      class={clsx("btn btn-block gap-x-1 btn-solid-success")}
+    >
+      <strong>
+        {mazeFills[selectedMazeIndex].title}
+      </strong>
+    </button>
 
-  <div
-    class="dropdown-menu dropdown-menu-bottom-right border border-gray-300 mt-2"
-  >
-    {#each mazeFills as mazeFill, index (index)}
-      <DropdownOption
-        active={index === selectedMazeIndex}
-        title={mazeFill.title}
-        on:click={() => {
-          selectedMazeIndex = index;
-          // @ts-ignore
-          document.activeElement?.blur();
-        }}
-      />
-    {/each}
+    <div
+      class="dropdown-menu dropdown-menu-bottom-right border border-gray-300 mt-2"
+    >
+      {#each mazeFills as mazeFill, index (index)}
+        <DropdownOption
+          active={index === selectedMazeIndex}
+          title={mazeFill.title}
+          on:click={() => {
+            selectedMazeIndex = index;
+            // @ts-ignore
+            document.activeElement?.blur();
+          }}
+        />
+      {/each}
+    </div>
   </div>
+  <span class="tooltip tooltip-bottom" data-tooltip="Generate New Maze">
+    <button disabled={running} class="btn btn-circle btn-secondary">
+      <IconRefreshDot />
+    </button>
+  </span>
 </div>
 
 <p class="font-semibold text-sm mt-4">Paint Mode</p>
