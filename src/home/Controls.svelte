@@ -8,6 +8,9 @@
     IconEraser,
     IconTopologyStar3
   } from "@tabler/icons-svelte";
+  import type { PathFindingController } from "./pathfinding/PathFindingController";
+
+  export let controller: PathFindingController;
 
   const algorithms = [
     { title: "Breadth First Search" },
@@ -146,7 +149,13 @@
   </button>
 </div>
 
-<button class="btn btn-success gap-x-2 mt-8" on:click={() => {}}>
+<button
+  class="btn btn-success gap-x-2 mt-8"
+  on:click={() => {
+    // .. run algorihm
+    controller.startPathFinding();
+  }}
+>
   <IconTopologyStar3 size={20} />
   <strong>Run Algorithm</strong>
 </button>

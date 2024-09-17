@@ -38,8 +38,6 @@ export class PathFindingScene extends BaseScene {
   private sourceNode: Node | null = null;
   private destNode: Node | null = null;
 
-  private currentAbortController: AbortController | null = null;
-
   // Paiting
   private mouseDown = false;
   private paintMode = PaintMode.Wall;
@@ -96,32 +94,6 @@ export class PathFindingScene extends BaseScene {
     this.input.on("pointerup", () => {
       this.mouseDown = false;
     });
-
-    this.input.keyboard?.on("keyup-SPACE", () => {
-      this.currentAbortController?.abort();
-
-      let controller = new AbortController();
-      this.currentAbortController = controller;
-
-      // @ts-ignore
-      window.c = controller;
-
-      this.findPath({ signal: controller.signal })
-        .then(path => {
-          if (path) {
-            // this.grid.reset(true);
-            return this.tracePath(path, { signal: controller.signal });
-          }
-        })
-        .then(() => {
-          console.log("Ended");
-        })
-        .catch(err => {
-          if (err.name === "AbortError") {
-            // Aborted
-          }
-        });
-    });
   }
 
   public update() {
@@ -173,7 +145,7 @@ export class PathFindingScene extends BaseScene {
     });
   }
 
-  private findPath(
+  public findPath(
     opts: {
       signal?: AbortSignal;
     } = {}
@@ -188,10 +160,10 @@ export class PathFindingScene extends BaseScene {
 
       this.grid.reset();
 
-      let finder = new BFSFinder(
+      // let finder = new BFSFinder(
       // let finder = new DFSFinder(
-      // let finder = new AStarFinder(
-      // let finder = new DijkstraFinder(
+        // let finder = new DijkstraFinder(
+      let finder = new AStarFinder(
         this.grid,
         this.sourceNode!,
         this.destNode!,
@@ -233,7 +205,7 @@ export class PathFindingScene extends BaseScene {
     });
   }
 
-  private tracePath(
+  public tracePath(
     path: Node[],
     opts: { signal?: AbortSignal } = {}
   ): Promise<void> {
@@ -278,7 +250,7 @@ export class PathFindingScene extends BaseScene {
   }
 
   public override destroy(): void {
-    this.currentAbortController?.abort();
+    // this.currentAbortController?.abort();
     this.backSheet.destroy();
     this.grid.destroy();
   }
@@ -286,9 +258,9 @@ export class PathFindingScene extends BaseScene {
   public static createGame(canvas: HTMLCanvasElement) {
     let rect = canvas.getBoundingClientRect();
 
-    let scene = new PathFindingScene();
+    const scene = new PathFindingScene();
 
-    let game = new Phaser.Game({
+    const game = new Phaser.Game({
       scene: scene,
       canvas: canvas,
       width: Math.round(rect.width),
@@ -300,9 +272,6 @@ export class PathFindingScene extends BaseScene {
       banner: false
     });
 
-    return () => {
-      scene.destroy();
-      game.destroy(false);
-    };
+    return { scene, game };
   }
 }

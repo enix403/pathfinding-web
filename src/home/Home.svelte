@@ -1,6 +1,11 @@
-<script>
+<script lang="ts">
   import CanvasGrid from "./CanvasGrid.svelte";
   import Controls from "./Controls.svelte";
+
+  import { PathFindingController } from "./pathfinding/PathFindingController";
+
+  let controller: PathFindingController | null = null;
+
 </script>
 
 <main class="flex w-full h-full">
@@ -13,12 +18,16 @@
       </section>
 
       <section class="sidebar-content h-fit min-h-[20rem] overflow-visible px-4">
-        <Controls />
+        {#if controller}
+          <Controls controller={controller} />
+        {/if}
       </section>
     </aside>
   </div>
 
   <div class="flex-1">
-    <CanvasGrid />
+    <CanvasGrid onInit={ctrl => {
+      controller = ctrl;
+    }} />
   </div>
 </main>
