@@ -12,7 +12,7 @@
         </div>
       </section>
 
-      <section class="sidebar-content h-fit min-h-[20rem] overflow-visible">
+      <section class="sidebar-content h-fit min-h-[20rem] overflow-visible px-4">
         <Controls />
       </section>
     </aside>
