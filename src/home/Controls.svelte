@@ -11,14 +11,20 @@
   } from "@tabler/icons-svelte";
   import type { PathFindingController } from "./pathfinding/PathFindingController";
   import { UserPaintMode } from "./pathfinding/UserPaintMode";
+  import {
+    BFSFinder,
+    DFSFinder,
+    AStarFinder,
+    DijkstraFinder
+  } from "./pathfinding/algorithms";
 
   export let controller: PathFindingController;
 
   const algorithms = [
-    { title: "Breadth First Search" },
-    { title: "Depth First Search" },
-    { title: "A-star Algorithm" },
-    { title: "Djikstra Algorithm" }
+    { title: "Breadth First Search", finderClass: BFSFinder },
+    { title: "Depth First Search", finderClass: DFSFinder },
+    { title: "A-star Algorithm", finderClass: AStarFinder },
+    { title: "Djikstra Algorithm", finderClass: DijkstraFinder }
   ];
 
   let selectedAlgorithmIndex = -1;
@@ -158,15 +164,18 @@
 
 <button
   class={clsx("btn gap-x-2 mt-8", running ? "btn-error" : "btn-success")}
+  disabled={selectedAlgorithmIndex === -1}
   on:click={() => {
     if (running) {
       running = false;
       controller.stop();
     } else {
       running = true;
-      controller.startPathFinding().then(() => {
-        running = false;
-      });
+      controller
+        .startPathFinding(algorithms[selectedAlgorithmIndex].finderClass)
+        .then(() => {
+          running = false;
+        });
     }
   }}
 >

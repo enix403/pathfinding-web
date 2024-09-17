@@ -1,3 +1,4 @@
+import { Constructor } from "~/types/utility";
 import { Grid } from "./Grid";
 import { Node } from "./Node";
 import { PathRequest } from "./PathRequest";
@@ -26,7 +27,7 @@ export abstract class Finder {
     private readonly signal?: AbortSignal
   ) {}
 
-  protected init() {}
+  public init() {}
 
   public progress() {
     if (this._ended || this.signal?.aborted) {
@@ -337,3 +338,5 @@ export class DijkstraFinder extends Finder {
     return this.gCost(node);
   }
 }
+
+export type FinderClass = Constructor<Finder, ConstructorParameters<typeof Finder>>;

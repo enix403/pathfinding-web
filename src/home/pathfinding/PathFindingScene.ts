@@ -2,12 +2,7 @@ import Phaser, { GameObjects } from "phaser";
 import { BaseScene } from "~/scene/BaseScene";
 import { Vector } from "~/math/vector";
 
-import {
-  BFSFinder,
-  AStarFinder,
-  DijkstraFinder,
-  DFSFinder
-} from "./algorithms";
+import type { FinderClass } from "./algorithms";
 import { Grid } from "./Grid";
 import { Node } from "./Node";
 // import { fillMaze } from "./rec-subdivide";
@@ -81,7 +76,7 @@ export class PathFindingScene extends BaseScene implements PathRequest {
       .setFillStyle(COLOR_LINES)
       .setDepth(0);
 
-    fillMaze(this.grid);
+    // fillMaze(this.grid);
 
     let walkableNodes = grid.getNodes().filter(n => n.walkable);
     walkableNodes.sort(() => 0.5 - Math.random());
@@ -167,21 +162,22 @@ export class PathFindingScene extends BaseScene implements PathRequest {
   }
 
   public async findPath(
+    finderClass: FinderClass,
     opts: {
       signal?: AbortSignal;
     } = {}
   ): Promise<Node[] | null> {
     this.runningCount++;
     try {
-      let path = await this.findPathInner(opts);
+      let path = await this.findPathInner(finderClass, opts);
       return path;
-    }
-    finally {
+    } finally {
       this.runningCount--;
     }
   }
 
   private findPathInner(
+    finderClass: FinderClass,
     opts: {
       signal?: AbortSignal;
     } = {}
@@ -196,14 +192,7 @@ export class PathFindingScene extends BaseScene implements PathRequest {
 
       this.grid.reset();
 
-      // let finder = new BFSFinder(
-      // let finder = new DFSFinder(
-      // let finder = new DijkstraFinder(
-      let finder = new AStarFinder(
-        this.grid,
-        this,
-        signal
-      );
+      let finder = new finderClass(this.grid, this, signal);
 
       finder.init();
       let intervalId: number;

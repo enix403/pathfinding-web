@@ -1,3 +1,4 @@
+import { FinderClass } from "./algorithms";
 import type { PathFindingScene } from "./PathFindingScene";
 import { UserPaintMode } from "./UserPaintMode";
 
@@ -13,14 +14,14 @@ export class PathFindingController {
     this.currentAbortController = null;
   }
 
-  public async startPathFinding() {
+  public async startPathFinding(finderClass: FinderClass) {
     this.currentAbortController?.abort();
 
     let controller = new AbortController();
     this.currentAbortController = controller;
 
     await this.scene
-      .findPath({ signal: controller.signal })
+      .findPath(finderClass, { signal: controller.signal })
       .then(path => {
         if (path) {
           return this.scene.tracePath(path, { signal: controller.signal });
