@@ -8,15 +8,18 @@ import { Node } from "./Node";
 // import { fillMaze } from "./rec-subdivide";
 import { fillMaze } from "./rec-backtrack";
 
-const COLOR_BLACK = 0x000000;
-const COLOR_WHITE = 0xffffff;
-const COLOR_LIGHT_BLUE = 0xadd5ff;
+const COLOR_UNVISITED = 0xffffff;
 
-const COLOR_YELLOW = 0xf2e707;
-const COLOR_RED = 0xeb3a34;
-const COLOR_GREEN = 0x37eb34;
-const COLOR_CYAN = 0x15edc2;
-const COLOR_ORANGE = 0xba7816;
+const COLOR_WALL = 0x0C3547;
+const COLOR_HOVER = 0xadd5ff;
+
+// const COLOR_SOURCE = 0x37eb34;
+const COLOR_SOURCE = 0xff6600;
+const COLOR_DEST = 0xeb3a34;
+
+const COLOR_PATH = 0xf2e707;
+const COLOR_OPENED = 0x15edc2;
+const COLOR_CLOSED = 0xba7816;
 
 const INTERVAL_FIND = 30;
 const INTERVAL_TRACE = 10;
@@ -148,21 +151,21 @@ export class PathFindingScene extends BaseScene {
     this.grid.getNodes().forEach(node => {
       let color: number;
       if (!node.walkable) {
-        color = COLOR_BLACK;
+        color = COLOR_WALL;
       } else if (node === this.sourceNode) {
-        color = COLOR_GREEN;
+        color = COLOR_SOURCE;
       } else if (node === this.destNode) {
-        color = COLOR_RED;
+        color = COLOR_DEST;
       } else if (node.pathNode) {
-        color = COLOR_YELLOW;
+        color = COLOR_PATH;
       } else if (node.closed) {
-        color = COLOR_ORANGE;
+        color = COLOR_CLOSED;
       } else if (node.opened) {
-        color = COLOR_CYAN;
+        color = COLOR_OPENED;
       } else if (node === hoveredNode) {
-        color = COLOR_LIGHT_BLUE;
+        color = COLOR_HOVER;
       } else {
-        color = COLOR_WHITE;
+        color = COLOR_UNVISITED;
       }
 
       node.setColor(color);
