@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
   import clsx from "clsx";
   import DropdownOption from "./DropdownOption.svelte";
 
-  import { IconCpu } from "@tabler/icons-svelte";
+  import { IconCpu, IconWall, IconEraser } from "@tabler/icons-svelte";
 
   const algorithms = [
     { title: "Breadth First Search" },
@@ -21,6 +21,9 @@
   ];
 
   let selectedMazeIndex = 0;
+
+  let paintMode: "wall" | "erase" = "wall";
+  let speed: "slow" | "fast" | "faster" = "fast";
 </script>
 
 <p class="font-semibold text-sm">Select Algorithm</p>
@@ -81,4 +84,59 @@
       />
     {/each}
   </div>
+</div>
+
+<p class="font-semibold text-sm mt-4">Paint Mode</p>
+<div class="flex mt-2 gap-x-1">
+  <button
+    class="btn gap-x-1 btn-sm"
+    class:btn-primary={paintMode === "wall"}
+    on:click={() => {
+      paintMode = "wall";
+    }}
+  >
+    <IconWall size={20} />
+    Wall
+  </button>
+  <button
+    class="btn gap-x-1 btn-sm"
+    class:btn-secondary={paintMode === "erase"}
+    on:click={() => {
+      paintMode = "erase";
+    }}
+  >
+    <IconEraser size={20} />
+    Erase
+  </button>
+</div>
+
+<p class="font-semibold text-sm mt-4">Speed</p>
+<div class="flex mt-2 gap-x-1">
+  <button
+    class="btn gap-x-1 btn-sm"
+    class:btn-secondary={speed === "slow"}
+    on:click={() => {
+      speed = "slow";
+    }}
+  >
+    Slow
+  </button>
+  <button
+    class="btn gap-x-1 btn-sm"
+    class:btn-primary={speed === "fast"}
+    on:click={() => {
+      speed = "fast";
+    }}
+  >
+    Fast
+  </button>
+  <button
+    class="btn gap-x-1 btn-sm"
+    class:btn-error={speed === "faster"}
+    on:click={() => {
+      speed = "faster";
+    }}
+  >
+    Faster
+  </button>
 </div>
