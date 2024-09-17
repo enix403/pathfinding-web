@@ -1,6 +1,6 @@
+import { Scene } from "phaser";
 import { Vector } from "~/math/vector";
 import { Node } from "./Node";
-import { GameObjects } from "phaser";
 
 export class Grid {
   private tileSize = 26;
@@ -24,11 +24,10 @@ export class Grid {
     return (this.tileSize + this.pad) * this.numTilesY;
   }
 
-  private backSheet: GameObjects.Rectangle;
   private nodes: Node[];
 
   constructor(
-    scene: Phaser.Scene,
+    scene: Scene,
     public readonly worldTopLeft: Vector,
     public readonly gridWorldSize: Vector
   ) {

@@ -1,5 +1,4 @@
-import Phaser, { GameObjects } from "phaser";
-import { BaseScene } from "~/scene/BaseScene";
+import Phaser, { GameObjects, Scene } from "phaser";
 import { Vector } from "~/math/vector";
 
 import type { FinderClass } from "./algorithms";
@@ -24,8 +23,6 @@ const COLOR_PATH = 0xfffe6a;
 const COLOR_OPENED = 0xfcaed9;
 const COLOR_CLOSED = 0x815fb3;
 
-const INTERVAL_FIND = 30;
-
 enum PaintMode {
   Wall,
   Erase,
@@ -33,7 +30,7 @@ enum PaintMode {
   Dest
 }
 
-export class PathFindingScene extends BaseScene implements PathRequest {
+export class PathFindingScene extends Scene implements PathRequest {
   private backSheet: GameObjects.Rectangle;
   private grid: Grid;
   private sourceNode: Node | null = null;
@@ -289,7 +286,7 @@ export class PathFindingScene extends BaseScene implements PathRequest {
     });
   }
 
-  public override destroy(): void {
+  public destroy(): void {
     this.backSheet?.destroy();
     this.grid?.destroy();
   }
