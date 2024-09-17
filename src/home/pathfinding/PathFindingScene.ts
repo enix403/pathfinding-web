@@ -49,6 +49,13 @@ export class PathFindingScene extends BaseScene {
   private paintMode = PaintMode.Wall;
   private userPaintMode = UserPaintMode.Wall;
 
+  // private running = false;
+  private runningCount: number;
+
+  public get IsRunning() {
+    return this.runningCount === 0;
+  }
+
   public create() {
     let grid = (this.grid = new Grid(
       this,
@@ -151,7 +158,22 @@ export class PathFindingScene extends BaseScene {
     this.userPaintMode = mode;
   }
 
-  public findPath(
+  public async findPath(
+    opts: {
+      signal?: AbortSignal;
+    } = {}
+  ): Promise<Node[] | null> {
+    this.runningCount++;
+    try {
+      let path = await this.findPathInner(opts);
+      return path;
+    }
+    finally {
+      this.runningCount--;
+    }
+  }
+
+  private findPathInner(
     opts: {
       signal?: AbortSignal;
     } = {}

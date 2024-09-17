@@ -4,15 +4,14 @@ import { UserPaintMode } from "./UserPaintMode";
 export class PathFindingController {
   private currentAbortController: AbortController | null;
 
-  private runningCount: number;
-
   public get IsRunning() {
-    return this.runningCount === 0;
+    // return this.runningCount === 0;
+    return this.scene.IsRunning;
   }
 
   constructor(private readonly scene: PathFindingScene) {
     this.currentAbortController = null;
-    this.runningCount = 0;
+    // this.runningCount = 0;
   }
 
   public async startPathFinding() {
@@ -21,7 +20,7 @@ export class PathFindingController {
     let controller = new AbortController();
     this.currentAbortController = controller;
 
-    this.runningCount++;
+    // this.runningCount++;
 
     await this.scene
       .findPath({ signal: controller.signal })
@@ -37,8 +36,6 @@ export class PathFindingController {
         if (err.name === "AbortError") {
           // Aborted
         }
-      }).finally(() => {
-        this.runningCount--;
       });
   }
 
