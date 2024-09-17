@@ -1,9 +1,6 @@
 <script context="module" lang="ts">
-  export interface AlgorithmOptionData {
-
-  }
+  export interface AlgorithmOptionData {}
 </script>
-
 
 <script lang="ts">
   export let title: string;

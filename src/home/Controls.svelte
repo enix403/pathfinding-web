@@ -27,6 +27,8 @@
         title={algorithm.title}
         on:click={() => {
           selectedIndex = index;
+          // @ts-ignore
+          document.activeElement?.blur();
         }}
       />
     {/each}
