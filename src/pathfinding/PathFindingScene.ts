@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { BaseScene } from "~/scene/BaseScene";
 import { Vector } from "~/math/vector";
 
-import { BFSFinder, AStarFinder } from "./algorithms";
+import { BFSFinder, AStarFinder, DijkstraFinder, DFSFinder } from "./algorithms";
 import { Grid } from "./Grid";
 import { Node } from "./Node";
 // import { fillMaze } from "./rec-subdivide";
@@ -48,7 +48,7 @@ export class PathFindingScene extends BaseScene {
       )
     );
 
-    fillMaze(this.grid);
+    // fillMaze(this.grid);
 
     let walkableNodes = this.grid.getNodes().filter(n => n.walkable);
     walkableNodes.sort(() => 0.5 - Math.random());
@@ -171,7 +171,9 @@ export class PathFindingScene extends BaseScene {
       this.grid.reset();
 
       // let finder = new BFSFinder(
-      let finder = new AStarFinder(
+      let finder = new DFSFinder(
+      // let finder = new AStarFinder(
+      // let finder = new DijkstraFinder(
         this.grid,
         this.sourceNode!,
         this.destNode!,
