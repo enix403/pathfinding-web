@@ -127,7 +127,7 @@ export class PathFindingScene extends BaseScene implements PathRequest {
         if (hoveredNode.walkable)
           this.sourceNode = hoveredNode;
       }
-      else if (this.paintMode === PaintMode.Dest && !this.IsRunning) {
+      else if (this.paintMode === PaintMode.Dest) {
         if (hoveredNode.walkable)
           this.destNode = hoveredNode;
       }

@@ -50,6 +50,7 @@
 <p class="font-semibold text-sm">Select Algorithm</p>
 <div class="dropdown w-full mt-2">
   <button
+    disabled={running}
     class={clsx(
       "btn btn-block gap-x-1",
       selectedAlgorithmIndex === -1 ? "btn-solid-primary" : "btn-solid-success"
@@ -84,7 +85,10 @@
 
 <p class="font-semibold text-sm mt-4">Select Maze</p>
 <div class="dropdown w-full mt-2">
-  <button class={clsx("btn btn-block gap-x-1 btn-solid-success")}>
+  <button
+    disabled={running}
+    class={clsx("btn btn-block gap-x-1 btn-solid-success")}
+  >
     <strong>
       {mazeFills[selectedMazeIndex].title}
     </strong>
@@ -162,31 +166,39 @@
   </button>
 </div>
 
-<button
-  class={clsx("btn gap-x-2 mt-8", running ? "btn-error" : "btn-success")}
-  disabled={selectedAlgorithmIndex === -1}
-  on:click={() => {
-    if (running) {
-      running = false;
-      controller.stop();
-    } else {
-      running = true;
-      controller
-        .startPathFinding(algorithms[selectedAlgorithmIndex].finderClass)
-        .then(() => {
-          running = false;
-        });
-    }
-  }}
+<span
+  class={clsx(
+    "mt-8",
+    !running && selectedAlgorithmIndex === -1 && "tooltip tooltip-top"
+  )}
+  data-tooltip="Select an algorithm first"
 >
-  {#if running}
-    <IconPlayerPauseFilled size={20} />
-    <strong>Stop Algorithm</strong>
-  {:else}
-    <IconTopologyStar3 size={20} />
-    <strong>Run Algorithm</strong>
-  {/if}
-</button>
+  <button
+    class={clsx("btn w-full gap-x-2", running ? "btn-error" : "btn-success")}
+    disabled={selectedAlgorithmIndex === -1}
+    on:click={() => {
+      if (running) {
+        running = false;
+        controller.stop();
+      } else {
+        running = true;
+        controller
+          .startPathFinding(algorithms[selectedAlgorithmIndex].finderClass)
+          .then(() => {
+            running = false;
+          });
+      }
+    }}
+  >
+    {#if running}
+      <IconPlayerPauseFilled size={20} />
+      <strong>Stop</strong>
+    {:else}
+      <IconTopologyStar3 size={20} />
+      <strong>Run Algorithm</strong>
+    {/if}
+  </button>
+</span>
 
 <div class="flex gap-x-2">
   <button
