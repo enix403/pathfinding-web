@@ -1,20 +1,32 @@
 <script>
+  import clsx from "clsx";
   import AlgorithmOption from "./AlgorithmOption.svelte";
+  import { IconCpu } from "@tabler/icons-svelte";
 
   const algorithms = [
     { title: "Breadth First Search" },
-    { title: "Depth First Search" }
+    { title: "Depth First Search" },
+    { title: "A-star Algorithm" },
+    { title: "Djikstra Algorithm" },
   ];
 
   let selectedIndex = -1;
 </script>
 
-<div class="dropdown">
-  <button class="btn btn-solid-primary">
+<div class="dropdown w-full">
+  <button
+    class={clsx(
+      "btn btn-block gap-x-1",
+      selectedIndex === -1 ? "btn-solid-primary" : "btn-solid-success"
+    )}
+  >
     {#if selectedIndex === -1}
+      <IconCpu />
       Select Algorithm
     {:else}
-      {algorithms[selectedIndex].title}
+      <strong>
+        {algorithms[selectedIndex].title}
+      </strong>
     {/if}
   </button>
 
