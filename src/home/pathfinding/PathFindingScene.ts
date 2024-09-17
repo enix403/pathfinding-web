@@ -13,6 +13,7 @@ import { Node } from "./Node";
 // import { fillMaze } from "./rec-subdivide";
 import { fillMaze } from "./rec-backtrack";
 import { UserPaintMode } from "./UserPaintMode";
+import { PathRequest } from "./PathRequest";
 
 const COLOR_LINES = 0x8ed4c7;
 
@@ -38,7 +39,7 @@ enum PaintMode {
   Dest
 }
 
-export class PathFindingScene extends BaseScene {
+export class PathFindingScene extends BaseScene implements PathRequest {
   private backSheet: GameObjects.Rectangle;
   private grid: Grid;
   private sourceNode: Node | null = null;
@@ -53,6 +54,14 @@ export class PathFindingScene extends BaseScene {
 
   public get IsRunning() {
     return this.runningCount !== 0;
+  }
+
+  public getSource(): Node {
+    return this.sourceNode!;
+  }
+
+  public getDest(): Node {
+    return this.destNode!;
   }
 
   public create() {
@@ -192,8 +201,7 @@ export class PathFindingScene extends BaseScene {
       // let finder = new DijkstraFinder(
       let finder = new AStarFinder(
         this.grid,
-        this.sourceNode!,
-        this.destNode!,
+        this,
         signal
       );
 

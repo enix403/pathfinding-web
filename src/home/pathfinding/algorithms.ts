@@ -1,5 +1,6 @@
 import { Grid } from "./Grid";
 import { Node } from "./Node";
+import { PathRequest } from "./PathRequest";
 
 export abstract class Finder {
   protected _found = false;
@@ -21,8 +22,7 @@ export abstract class Finder {
 
   constructor(
     public readonly grid: Grid,
-    public readonly source: Node,
-    public readonly dest: Node,
+    private readonly pathRequest: PathRequest,
     private readonly signal?: AbortSignal
   ) {}
 
@@ -37,6 +37,14 @@ export abstract class Finder {
   }
 
   public abstract step(): void;
+
+  public get source() {
+    return this.pathRequest.getSource();
+  }
+
+  public get dest() {
+    return this.pathRequest.getDest();
+  }
 
   protected constructPath() {
     this._ended = true;
