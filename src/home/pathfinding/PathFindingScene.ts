@@ -266,8 +266,8 @@ export class PathFindingScene extends BaseScene {
       width: Math.round(rect.width),
       height: Math.round(rect.height),
       backgroundColor: "#ffffff",
-      type: Phaser.CANVAS,
-      powerPreference: "high-performance",
+      type: Phaser.WEBGL,
+      // powerPreference: "high-performance",
       audio: { noAudio: true },
       banner: false
     });

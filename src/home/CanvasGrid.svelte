@@ -10,6 +10,7 @@
 
   onMount(() => {
     const { game, scene } = PathFindingScene.createGame(canvas!);
+    window.game = game;
 
     let controller = new PathFindingController(scene);
     onInit?.(controller);
