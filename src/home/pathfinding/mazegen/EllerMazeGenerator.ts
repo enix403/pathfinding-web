@@ -66,7 +66,7 @@ class DisjointSets {
   }
 }
 
-export class EllenMazeGenerator implements MazeGenerator {
+export class EllerMazeGenerator implements MazeGenerator {
   generate(grid: Grid) {
     let evenWidth = Math.floor(grid.NumTilesX / 2) * 2;
     let evenHeight = Math.floor(grid.NumTilesY / 2) * 2;
