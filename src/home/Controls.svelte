@@ -22,6 +22,7 @@
   import { EmptyMazeGenerator } from "./pathfinding/mazegen/EmptyMazeGenerator";
   import { RecursiveDivideGenerator } from "./pathfinding/mazegen/RecursiveDivideGenerator";
   import { RecursiveBacktrackGenerator } from "./pathfinding/mazegen/RecursiveBacktrackGenerator";
+  import { EllenMazeGenerator } from "./pathfinding/mazegen/EllenMazeGenerator";
 
   export let controller: PathFindingController;
 
@@ -37,7 +38,8 @@
   const mazeFills = [
     { title: "Empty Grid", genClass: EmptyMazeGenerator },
     { title: "Recurisve Divide", genClass: RecursiveDivideGenerator },
-    { title: "Recurisve Backtracking", genClass: RecursiveBacktrackGenerator }
+    { title: "Recurisve Backtracking", genClass: RecursiveBacktrackGenerator },
+    { title: "Ellen Maze", genClass: EllenMazeGenerator }
   ];
 
   let selectedMazeIndex = 0;
