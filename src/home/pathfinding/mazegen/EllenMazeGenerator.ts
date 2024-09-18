@@ -53,10 +53,6 @@ class DisjointSets {
     let setIdA = this.nodeToSetId.get(nodeA)!;
     let setIdB = this.nodeToSetId.get(nodeB)!;
 
-    // if (!setIdA || !setIdB) {
-    // return;
-    // }
-
     let setA = this.setIdToSet.get(setIdA)!;
     let setB = this.setIdToSet.get(setIdB)!;
 
@@ -72,24 +68,21 @@ class DisjointSets {
 
 export class EllenMazeGenerator implements MazeGenerator {
   generate(grid: Grid) {
-    // for (let x = 0; x < grid.NumTilesX; x += 2) {
-    //   let node = grid.getNode(x, 0);
-    //   node.pathNode = true;
-    // }
-
-    // return;
+    let evenWidth = Math.floor(grid.NumTilesX / 2) * 2;
+    let evenHeight = Math.floor(grid.NumTilesY / 2) * 2;
 
     grid.getNodes().forEach(node => {
-      node.walkable = false;
+      let itOutside = node.tileX >= evenWidth - 1 || node.tileY >= evenHeight - 1;
+
+      if (itOutside)
+        node.walkable = Math.random() > 0.3;
+      else
+        node.walkable = false;
     });
 
     // ====================================
 
-    // return;
-
     let ds = new DisjointSets();
-    let evenWidth = Math.floor(grid.NumTilesX / 2) * 2;
-    let evenHeight = Math.floor(grid.NumTilesY / 2) * 2;
 
     for (let x = 0; x < evenWidth; x += 2) {
       let node = grid.getNode(x, 0);
@@ -97,50 +90,57 @@ export class EllenMazeGenerator implements MazeGenerator {
       ds.makeSet(node);
     }
 
-    const y = 0;
+    for (let y = 0; y < evenHeight; y += 2) {
+      let lastRow = y >= evenHeight - 2;
 
-    for (let x = 0; x < evenWidth - 2; x += 2) {
-      let wx = x + 1;
-      let nx = x + 2;
+      for (let x = 0; x < evenWidth - 2; x += 2) {
+        let wx = x + 1;
+        let nx = x + 2;
 
-      let node = grid.getNode(x, y);
-      let wall = grid.getNode(wx, y);
-      let ng = grid.getNode(nx, y);
+        let node = grid.getNode(x, y);
+        let wall = grid.getNode(wx, y);
+        let ng = grid.getNode(nx, y);
 
-      if (!ds.sameSet(node, ng)) {
-        if (Math.random() > 0.5) {
-          ds.merge(node, ng);
+        let disjoint = !ds.sameSet(node, ng);
+
+        if (lastRow || (disjoint && Math.random() > 0.5)) {
+          if (disjoint)
+            ds.merge(node, ng);
 
           wall.walkable = true;
           ng.walkable = true;
         }
       }
-    }
 
-    // return;
+      if (lastRow)
+        //
+        break;
 
-    let connectedSets = new Set<number>();
+      // return;
 
-    for (let x = 0; x < evenWidth; x += 2) {
-      // bottom node
-      let wy = y + 1;
-      let ny = y + 2;
+      let connectedSets = new Set<number>();
 
-      let node = grid.getNode(x, y);
-      let wall = grid.getNode(x, wy);
-      let ng = grid.getNode(x, ny);
+      for (let x = 0; x < evenWidth; x += 2) {
+        // bottom node
+        let wy = y + 1;
+        let ny = y + 2;
 
-      ng.walkable = true;
+        let node = grid.getNode(x, y);
+        let wall = grid.getNode(x, wy);
+        let ng = grid.getNode(x, ny);
 
-      let setId = ds.findSetId(node)!;
-      let hasVerticalJoin = connectedSets.has(setId);
+        ng.walkable = true;
 
-      if (!hasVerticalJoin || Math.random() > 0.5) {
-        ds.makeAndMerge(node, ng);
-        wall.walkable = true;
-        connectedSets.add(setId);
-      } else {
-        ds.makeSet(ng);
+        let setId = ds.findSetId(node)!;
+        let hasVerticalJoin = connectedSets.has(setId);
+
+        if (!hasVerticalJoin || Math.random() > 0.5) {
+          ds.makeAndMerge(node, ng);
+          wall.walkable = true;
+          connectedSets.add(setId);
+        } else {
+          ds.makeSet(ng);
+        }
       }
     }
   }
