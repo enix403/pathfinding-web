@@ -24,6 +24,10 @@ class DisjointSets {
     this.nodeToSetId.set(node, setId);
   }
 
+  public findSetId(node: Node) {
+    return this.nodeToSetId.get(node);
+  }
+
   public find(node: Node): Set<Node> | null {
     let setId = this.nodeToSetId.get(node);
     if (!setId) return null;
@@ -33,6 +37,16 @@ class DisjointSets {
 
   public sameSet(nodeA: Node, nodeB: Node) {
     return this.nodeToSetId.get(nodeA) === this.nodeToSetId.get(nodeB);
+  }
+
+  // Add a (new) node `nodeB` to the existing set of the
+  // node `nodeA`
+  public makeAndMerge(nodeA: Node, nodeB: Node) {
+    let setId = this.nodeToSetId.get(nodeA)!;
+    let set = this.setIdToSet.get(setId)!;
+
+    set.add(nodeB);
+    this.nodeToSetId.set(nodeB, setId);
   }
 
   public merge(nodeA: Node, nodeB: Node) {
@@ -72,7 +86,8 @@ export class EllenMazeGenerator implements MazeGenerator {
       ds.makeSet(node);
     }
 
-    let y = 0;
+    const y = 0;
+
     for (let x = 0; x < grid.NumTilesX - 2; x += 2) {
       let wx = x + 1;
       let nx = x + 2;
@@ -88,6 +103,31 @@ export class EllenMazeGenerator implements MazeGenerator {
           wall.walkable = true;
           ng.walkable = true;
         }
+      }
+    }
+
+    let connectedSets = new Set<number>();
+
+    for (let x = 0; x < grid.NumTilesX; x += 2) {
+      let node = grid.getNode(x, y);
+      let setId = ds.findSetId(node)!;
+
+      let hasVerticalJoin = connectedSets.has(setId);
+
+      if (true || !hasVerticalJoin || Math.random() > 0.5) {
+        // get bottom node
+        let wy = y + 1;
+        let ny = y + 2;
+
+        let wall = grid.getNode(x, wy);
+        let ng = grid.getNode(x, ny);
+
+        ds.makeAndMerge(node, ng);
+
+        wall.walkable = true;
+        ng.walkable = true;
+
+        connectedSets.add(setId);
       }
     }
   }

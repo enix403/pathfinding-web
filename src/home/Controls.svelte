@@ -42,7 +42,8 @@
     { title: "Ellen Maze", genClass: EllenMazeGenerator }
   ];
 
-  let selectedMazeIndex = 0;
+  // let selectedMazeIndex = 0;
+  let selectedMazeIndex = 3;
 
   function generateMaze() {
     const genClass = mazeFills[selectedMazeIndex]?.genClass;
