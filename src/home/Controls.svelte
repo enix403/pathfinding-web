@@ -44,7 +44,7 @@
     { title: "Binary Tree Algorithm", genClass: BinaryTreeMazeGenerator },
   ];
 
-  let selectedMazeIndex = 4;
+  let selectedMazeIndex = 0;
 
   function generateMaze() {
     const genClass = mazeFills[selectedMazeIndex]?.genClass;
