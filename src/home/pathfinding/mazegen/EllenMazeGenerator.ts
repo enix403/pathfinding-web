@@ -72,7 +72,6 @@ class DisjointSets {
 
 export class EllenMazeGenerator implements MazeGenerator {
   generate(grid: Grid) {
-
     // for (let x = 0; x < grid.NumTilesX; x += 2) {
     //   let node = grid.getNode(x, 0);
     //   node.pathNode = true;
@@ -90,6 +89,7 @@ export class EllenMazeGenerator implements MazeGenerator {
 
     let ds = new DisjointSets();
     let evenWidth = Math.floor(grid.NumTilesX / 2) * 2;
+    let evenHeight = Math.floor(grid.NumTilesY / 2) * 2;
 
     for (let x = 0; x < evenWidth; x += 2) {
       let node = grid.getNode(x, 0);
@@ -122,32 +122,26 @@ export class EllenMazeGenerator implements MazeGenerator {
     let connectedSets = new Set<number>();
 
     for (let x = 0; x < evenWidth; x += 2) {
+      // bottom node
+      let wy = y + 1;
+      let ny = y + 2;
+
       let node = grid.getNode(x, y);
-      // node.pathNode = true;
+      let wall = grid.getNode(x, wy);
+      let ng = grid.getNode(x, ny);
+
+      ng.walkable = true;
 
       let setId = ds.findSetId(node)!;
-
       let hasVerticalJoin = connectedSets.has(setId);
 
       if (!hasVerticalJoin || Math.random() > 0.5) {
-        // get bottom node
-        let wy = y + 1;
-        let ny = y + 2;
-
-        let wall = grid.getNode(x, wy);
-        let ng = grid.getNode(x, ny);
-
         ds.makeAndMerge(node, ng);
-
         wall.walkable = true;
-        ng.walkable = true;
-
         connectedSets.add(setId);
+      } else {
+        ds.makeSet(ng);
       }
     }
-
-
-
-
   }
 }
