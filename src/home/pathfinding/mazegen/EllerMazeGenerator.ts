@@ -72,12 +72,7 @@ export class EllerMazeGenerator implements MazeGenerator {
     let evenHeight = Math.floor(grid.NumTilesY / 2) * 2;
 
     grid.getNodes().forEach(node => {
-      let itOutside = node.tileX >= evenWidth - 1 || node.tileY >= evenHeight - 1;
-
-      if (itOutside)
-        node.walkable = Math.random() > 0.3;
-      else
-        node.walkable = false;
+      node.walkable = false;
     });
 
     // ====================================
